@@ -112,20 +112,22 @@
     </padded-normal>
   </macro>>
 
+  <assign|list-depth|0>
+
   <assign|list|<\macro|item-render|item-transform|body>
-    <\with|current-item|<arg|item-render>|transform-item|<arg|item-transform>|item-nr|<if|<equal|<value|enumerate-level>|1>|<value|item-nr>|0>>
+    <\with|current-item|<arg|item-render>|transform-item|<arg|item-transform>|list-depth|<plus|<value|list-depth>|1>|item-nr|<if|<equal|<value|list-depth>|0>|<value|item-nr>|0>>
       <render-list|<arg|body>>
     </with>
   </macro>>
 
   <assign|list*|<\macro|item-render|item-transform|body>
-    <\with|current-item|<arg|item-render>|transform-item|<quasiquote|<macro|name|<unquote|<value|last-item>>.<compound|<unquote|<arg|item-transform>>|<arg|name>>>>|item-nr|<value|item-nr>|last-item-nr|0>
+    <\with|current-item|<arg|item-render>|transform-item|<quasiquote|<macro|name|<unquote|<value|last-item>>.<compound|<unquote|<arg|item-transform>>|<arg|name>>>>|list-depth|<plus|<value|list-depth>|1>|item-nr|<value|item-nr>|last-item-nr|0>
       <render-list|<arg|body>>
     </with>
   </macro>> 
 
   <assign|list-continued|<\macro|item-render|item-transform|body>
-    <\with|current-item|<arg|item-render>|transform-item|<arg|item-transform>|item-nr|<value|last-item-nr>>
+    <\with|current-item|<arg|item-render>|transform-item|<arg|item-transform>|list-depth|<plus|<value|list-depth>|1>|item-nr|<value|last-item-nr>>
       <render-list|<arg|body>>
     </with>
   </macro>>
