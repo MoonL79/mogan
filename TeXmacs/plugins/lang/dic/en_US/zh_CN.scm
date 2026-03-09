@@ -1140,6 +1140,7 @@
 ("insert plain text" "插入纯文本")
 ("insert points" "插入点")
 ("insert polygons" "插入多边形")
+("insert rectangles" "插入矩形")
 ("insert right" "在右侧插入列")
 ("insert row above" "在上方插入行")
 ("insert row below" "在下方插入行")
