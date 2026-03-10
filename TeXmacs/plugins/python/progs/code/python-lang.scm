@@ -114,19 +114,20 @@
 
 ;; 定义语法高亮颜色偏好设置
 (define-preferences
-  ("syntax:python:none" "red" notify-python-syntax)                       ;; 无类型语法元素颜色
-  ("syntax:python:comment" "brown" notify-python-syntax)                  ;; 注释颜色
-  ("syntax:python:error" "dark red" notify-python-syntax)                 ;; 错误颜色
-("syntax:python:constant" "#4040c0" notify-python-syntax)               ;; 常量颜色
-  ("syntax:python:constant_number" "#4040c0" notify-python-syntax)      ;; 数字常量颜色
-  ("syntax:python:constant_string" "dark grey" notify-python-syntax)      ;; 字符串常量颜色
-  ("syntax:python:constant_char" "#333333" notify-python-syntax)        ;; 字符常量颜色
-  ("syntax:python:declare_function" "#0000c0" notify-python-syntax)     ;; 函数声明颜色
-  ("syntax:python:declare_type" "#0000c0" notify-python-syntax)         ;; 类型声明颜色
-  ("syntax:python:operator" "#8b008b" notify-python-syntax)             ;; 运算符颜色
-  ("syntax:python:operator_openclose" "#B02020" notify-python-syntax)   ;; 开闭运算符颜色
-  ("syntax:python:operator_field" "#88888" notify-python-syntax)          ;; 字段运算符颜色
-  ("syntax:python:operator_special" "orange" notify-python-syntax)        ;; 特殊运算符颜色
-  ("syntax:python:keyword" "#309090" notify-python-syntax)              ;; 关键字颜色
-  ("syntax:python:keyword_conditional" "#309090" notify-python-syntax)  ;; 条件关键字颜色
-  ("syntax:python:keyword_control" "#309090" notify-python-syntax))     ;; 控制关键字颜色
+  ("syntax:python:none" "#ff6b6b" notify-python-syntax)                   ;; 浅红色 (light red)
+  ("syntax:python:comment" "#d4a373" notify-python-syntax)                ;; 浅棕色 (light brown)
+  ("syntax:python:error" "#ff4d4d" notify-python-syntax)                  ;; 亮红色 (bright red)
+  ("syntax:python:constant" "#6a8cff" notify-python-syntax)               ;; 浅蓝色 (light blue)
+  ("syntax:python:constant_number" "#6a8cff" notify-python-syntax)        ;; 浅蓝色 (light blue)
+  ("syntax:python:constant_string" "#a9a9a9" notify-python-syntax)        ;; 浅灰色 (light grey)
+  ("syntax:python:constant_char" "#b0b0b0" notify-python-syntax)          ;; 浅灰色 (light grey)
+  ("syntax:python:declare_function" "#4d7eff" notify-python-syntax)       ;; 浅蓝色 (light blue)
+  ("syntax:python:declare_type" "#4d7eff" notify-python-syntax)           ;; 浅蓝色 (light blue)
+  ("syntax:python:declare_module" "#4d7eff" notify-python-syntax)         ;; 浅蓝色 (light blue)
+  ("syntax:python:operator" "#e066ff" notify-python-syntax)               ;; 浅洋红色 (light magenta)
+  ("syntax:python:operator_openclose" "#ff6666" notify-python-syntax)     ;; 浅红色 (light red)
+  ("syntax:python:operator_field" "#d1d1d1" notify-python-syntax)         ;; 浅灰色 (light grey)
+  ("syntax:python:operator_special" "#ffb347" notify-python-syntax)       ;; 浅橙色 (light orange)
+  ("syntax:python:keyword" "#4db8b8" notify-python-syntax)                ;; 浅青色 (light teal/cyan)
+  ("syntax:python:keyword_conditional" "#4db8b8" notify-python-syntax)    ;; 浅青色 (light teal/cyan)
+  ("syntax:python:keyword_control" "#4db8b8" notify-python-syntax))
