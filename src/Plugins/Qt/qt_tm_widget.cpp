@@ -2285,7 +2285,7 @@ qt_tm_widget_rep::updateRadialMenuSections () {
 
   // If no sections found, show a message
   if (N (sections) == 0) {
-    radialMenuDock->menu ()->addItem (QString::fromUtf8 ("无章节"),
+    radialMenuDock->menu ()->addItem ("No sections",
                                       QIcon (), QString (), -1);
     return;
   }
@@ -2314,7 +2314,7 @@ qt_tm_widget_rep::updateRadialMenuSections () {
   // If there are more sections, add an indicator
   if (N (sections) > 8) {
     radialMenuDock->menu ()->addItem (
-        QString::fromUtf8 ("更多..."), QIcon (), 
-        QString::fromUtf8 ("共 %1 个章节").arg (N (sections)), -2);
+        "More...", QIcon (), 
+        QString ("Total %1 sections").arg (N (sections)), -2);
   }
 }
