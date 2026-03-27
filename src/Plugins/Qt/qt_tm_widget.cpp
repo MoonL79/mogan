@@ -48,6 +48,7 @@
 #include "qt_utilities.hpp"
 
 #include "QTMGuiHelper.hpp" // needed to connect()
+#include "QTMRadialMenu.hpp"
 #include "QTMInteractiveInputHelper.hpp"
 #include "QTMInteractivePrompt.hpp"
 #include "QTMOAuth.hpp"
@@ -523,6 +524,33 @@ qt_tm_widget_rep::qt_tm_widget_rep (int mask, command _quit)
   bl->addWidget (q);
 
   mw->setCentralWidget (cw);
+
+  // Radial menu dock – floating in the bottom-right corner of the central widget.
+  // Parent to cw but create AFTER setCentralWidget so cw has a valid geometry.
+  // We must remove it from cw's layout so it floats freely.
+  radialMenuDock= new QTMRadialMenuDock (cw);
+  if (cw->layout ()) {
+    cw->layout ()->removeWidget (radialMenuDock);
+  }
+  
+  // Update menu items when about to expand
+  QObject::connect (radialMenuDock, &QTMRadialMenuDock::aboutToExpand, 
+                    mainwindow (),
+                    [this] () { updateRadialMenuSections (); });
+  
+  // Connect radialMenu item click signal to handler
+  QObject::connect (radialMenuDock, &QTMRadialMenuDock::itemClicked, mainwindow (),
+                    [this] (int id, int index) {
+                      // id stores the section index we want to jump to
+                      if (id >= 0) {
+                        string cmd= "(begin "
+                                    "(with-buffer (current-buffer) "
+                                    "(let* ((secs (tree-search-sections (buffer-tree))) "
+                                    "       (sec (list-ref secs " * as_string (id) * "))) "
+                                    "(if sec (tree-go-to sec 0 :end)))))";
+                        eval (cmd);
+                      }
+                    });
 
   mainToolBar->setObjectName ("mainToolBar");
   modeToolBar->setObjectName ("modeToolBar");
@@ -2235,4 +2263,58 @@ qt_tm_widget_rep::checkNetworkAvailable () {
       }
     }
   });
+}
+
+void
+qt_tm_widget_rep::updateRadialMenuSections () {
+  if (!radialMenuDock || !radialMenuDock->menu ()) return;
+
+  // Clear existing items
+  radialMenuDock->menu ()->clearItems ();
+
+  // Get sections from current document
+  string         cmd= "(tree-search-sections (buffer-tree))";
+  object         result= eval (cmd);
+  array<object>  sections;
+
+  // Convert scheme list to array
+  while (!is_null (result)) {
+    sections << car (result);
+    result= cdr (result);
+  }
+
+  // If no sections found, show a message
+  if (N (sections) == 0) {
+    radialMenuDock->menu ()->addItem (QString::fromUtf8 ("无章节"),
+                                      QIcon (), QString (), -1);
+    return;
+  }
+
+  // Add each section as a menu item
+  int max_items= qMin (N (sections), 8); // Limit to 8 items for radial menu
+  for (int i= 0; i < max_items; i++) {
+    tree sec_tree= as_tree (sections[i]);
+    
+    // Get section title - the first child is usually the title
+    string title= "Section " * as_string (i + 1);
+    if (N (sec_tree) > 0 && is_atomic (sec_tree[0])) {
+      string label_str (sec_tree[0]->label);
+      title= label_str;
+      // Limit title length for display
+      if (N (title) > 20) {
+        title= title (0, 17) * "...";
+      }
+    }
+
+    // Add item with section index as id
+    radialMenuDock->menu ()->addItem (to_qstring (title), QIcon (),
+                                      QString (), i);
+  }
+
+  // If there are more sections, add an indicator
+  if (N (sections) > 8) {
+    radialMenuDock->menu ()->addItem (
+        QString::fromUtf8 ("更多..."), QIcon (), 
+        QString::fromUtf8 ("共 %1 个章节").arg (N (sections)), -2);
+  }
 }

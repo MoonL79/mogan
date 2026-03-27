@@ -41,6 +41,7 @@
 class QLabel;
 class QToolBar;
 class QTMInteractivePrompt;
+class QTMRadialMenuDock;
 
 /*! Models one main window with toolbars, an associated view, etc.
 
@@ -90,6 +91,7 @@ class qt_tm_widget_rep : public qt_window_widget_rep {
   QLabel*                    membershipTitleLabel;
   QPushButton*               loginActionButton;
   QPushButton*               logoutButton;
+  QTMRadialMenuDock*         radialMenuDock;
 
 #ifdef Q_OS_MAC
   QToolBar* dumbToolBar;
@@ -157,6 +159,7 @@ public:
   static void tweak_iconbar_size (QSize& sz);
   void        openRenewalPage ();
   void        checkNetworkAvailable ();
+  void        updateRadialMenuSections ();
 
   friend class QTMInteractiveInputHelper;
 
