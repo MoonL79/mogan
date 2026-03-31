@@ -989,19 +989,9 @@
       (get-init-env var)
       #f))
 
-(tm-menu (focus-preferences-menu t)
-  (:require (section-context? t))
-  (with var (focus-section-title-style-var t)
-    (when var
-      (group "Title style")
-      ((check "Centered" "v" (== (safe-init-env var) "center"))
-       (init-env var "center"))
-      ((check "Left aligned" "v" (== (safe-init-env var) "left"))
-       (init-env var "left"))
-      ---))
-  (with num-var (section-number-style-var t)
+(menu-bind section-number-style-menu
+  (with num-var (section-number-style-var (focus-tree))
     (when num-var
-      (group "Number style")
       ((check "Arabic (1, 2, 3)" "v" (== (safe-init-env num-var) "arabic"))
        (init-env num-var "arabic"))
       ((check "Hanzi (一, 二, 三)" "v" (== (safe-init-env num-var) "hanzi"))
@@ -1015,21 +1005,11 @@
       ((check "alpha (a, b, c)" "v" (== (safe-init-env num-var) "alpha"))
        (init-env num-var "alpha"))
       ((check (verbatim "Circle (①, ②, ③)") "v" (== (safe-init-env num-var) "circle"))
-       (init-env num-var "circle"))
-      ---))
-  (with l (tree-label t)
-    (when (in? l '(section subsection))
-      (group "Section prefix")
-      ((check "Short numbering" "v"
-              (== (get-init-env "sectional-short-style") "true"))
-       (init-env "sectional-short-style" "true"))
-      ((check "Long numbering" "v"
-              (!= (get-init-env "sectional-short-style") "true"))
-       (init-env "sectional-short-style" "false"))
-      ---))
-  (with sep-var (section-sep-var t)
+       (init-env num-var "circle")))))
+
+(menu-bind section-sep-menu
+  (with sep-var (section-sep-var (focus-tree))
     (when sep-var
-      (group "Separator")
       ((check "." "v" (== (safe-init-env sep-var) "."))
        (init-env sep-var "."))
       ((check "、" "v" (== (safe-init-env sep-var) "<#3001>"))
@@ -1039,11 +1019,11 @@
       ((check "space" "v" (== (safe-init-env sep-var) " "))
        (init-env sep-var " "))
       ((check "none" "v" (== (safe-init-env sep-var) ""))
-       (init-env sep-var ""))
-      ---))
-  (with prefix-sep-var (section-prefix-sep-var t)
+       (init-env sep-var "")))))
+
+(menu-bind section-prefix-sep-menu
+  (with prefix-sep-var (section-prefix-sep-var (focus-tree))
     (when prefix-sep-var
-      (group "Prefix separator")
       ((check "." "v" (== (safe-init-env prefix-sep-var) "."))
        (init-env prefix-sep-var "."))
       ((check "、" "v" (== (safe-init-env prefix-sep-var) "<#3001>"))
@@ -1053,8 +1033,40 @@
       ((check "space" "v" (== (safe-init-env prefix-sep-var) " "))
        (init-env prefix-sep-var " "))
       ((check "none" "v" (== (safe-init-env prefix-sep-var) ""))
-       (init-env prefix-sep-var ""))
-      ---))
+       (init-env prefix-sep-var "")))))
+
+(tm-menu (focus-preferences-menu t)
+  (:require (section-context? t))
+  (with var (focus-section-title-style-var t)
+    (if var
+        (group "Title style")
+        ((check "Centered" "v" (== (safe-init-env var) "center"))
+         (init-env var "center"))
+        ((check "Left aligned" "v" (== (safe-init-env var) "left"))
+         (init-env var "left"))
+        ---))
+  (with num-var (section-number-style-var t)
+    (if num-var
+        (-> "Number style" (link section-number-style-menu))
+        ---))
+  (with prefix-num-var (section-number-style-var t)
+    (if prefix-num-var
+        (group "Section prefix")
+        ((check "Short numbering" "v"
+                (== (get-init-env "sectional-short-style") "true"))
+         (init-env "sectional-short-style" "true"))
+        ((check "Long numbering" "v"
+                (!= (get-init-env "sectional-short-style") "true"))
+         (init-env "sectional-short-style" "false"))
+        ---))
+  (with sep-var (section-sep-var t)
+    (if sep-var
+        (-> "Separator" (link section-sep-menu))
+        ---))
+  (with prefix-sep-var (section-prefix-sep-var t)
+    (if prefix-sep-var
+        (-> "Prefix separator" (link section-prefix-sep-menu))
+        ---))
   (dynamic (focus-tag-edit-menu (tree-label t))))
 
 (tm-menu (focus-preferences-menu t)
