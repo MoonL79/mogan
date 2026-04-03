@@ -40,6 +40,11 @@ option("text_toolbar")
     set_description("Enable text selection floating toolbar")
 option_end()
 
+option("tutorial")
+    set_default(false)
+    set_description("Enable tutorial infrastructure and first-launch tutorial")
+option_end()
+
 -- Adjust community or commercial version
 option("is_community")
     set_default(true)
@@ -88,6 +93,7 @@ add_configfiles("src/System/config.h.xmake", {
         USE_MUPDF_RENDERER = has_config("mupdf"),
         USE_STARTUP_TAB = has_config("startup_tab"),
         USE_TEXT_TOOLBAR = has_config("text_toolbar"),
+        USE_TUTORIAL = has_config("tutorial"),
         IS_COMMUNITY = has_config("is_community"),
         DEBUG_WITH_TIMESTAMP = has_config("debug_with_timestamp"),
     }
@@ -696,6 +702,7 @@ target("libmogan") do
                 USE_MUPDF_RENDERER = has_config("mupdf"),
                 USE_STARTUP_TAB = has_config("startup_tab"),
                 USE_TEXT_TOOLBAR = has_config("text_toolbar"),
+                USE_TUTORIAL = has_config("tutorial"),
                 IS_COMMUNITY = has_config("is_community"),
                 DEBUG_WITH_TIMESTAMP = has_config("debug_with_timestamp"),
                 }})

@@ -93,4 +93,6 @@ ${define USE_STARTUP_TAB}
 
 ${define USE_TEXT_TOOLBAR}
 
+${define USE_TUTORIAL}
+
 ${define IS_COMMUNITY}
