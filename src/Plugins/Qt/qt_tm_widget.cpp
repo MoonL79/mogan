@@ -424,9 +424,9 @@ qt_tm_widget_rep::qt_tm_widget_rep (int mask, command _quit)
 
   QStatusBar* bar= new QStatusBar (mw);
   bar->setObjectName ("statusBar");
-  leftLabel      = new QLabel (qt_translate ("Welcome to TeXmacs"), bar);
-  middleLabel    = new QLabel ("", bar);
-  rightLabel     = new QLabel (qt_translate ("Booting"), bar);
+  leftLabel  = new QLabel (qt_translate ("Welcome to TeXmacs"), bar);
+  middleLabel= new QLabel ("", bar);
+  rightLabel = new QLabel (qt_translate ("Booting"), bar);
   leftLabel->setFrameStyle (QFrame::NoFrame);
   middleLabel->setFrameStyle (QFrame::NoFrame);
   rightLabel->setFrameStyle (QFrame::NoFrame);

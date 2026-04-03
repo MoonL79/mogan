@@ -26,8 +26,8 @@
 #include <QPainter>
 #include <QPainterPath>
 #include <QPushButton>
-#include <QStringList>
 #include <QStatusBar>
+#include <QStringList>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QWheelEvent>
@@ -46,7 +46,7 @@ mapRectToWindow (QWidget* widget, QMainWindow* window) {
   QPoint topLeft= widget->mapTo (window, QPoint (0, 0));
   if (!window->rect ().contains (topLeft)) {
     const QPoint globalTopLeft= widget->mapToGlobal (QPoint (0, 0));
-    topLeft= window->mapFromGlobal (globalTopLeft);
+    topLeft                   = window->mapFromGlobal (globalTopLeft);
   }
 
   return QRect (topLeft, widget->size ());
@@ -73,16 +73,11 @@ bool
 parsePlacement (const QString& value, QWK::TutorialPlacement& placement) {
   const QString normalized= value.trimmed ().toLower ();
   if (normalized == "auto") placement= QWK::TutorialPlacement::Auto;
-  else if (normalized == "top")
-    placement= QWK::TutorialPlacement::Top;
-  else if (normalized == "bottom")
-    placement= QWK::TutorialPlacement::Bottom;
-  else if (normalized == "left")
-    placement= QWK::TutorialPlacement::Left;
-  else if (normalized == "right")
-    placement= QWK::TutorialPlacement::Right;
-  else
-    return false;
+  else if (normalized == "top") placement= QWK::TutorialPlacement::Top;
+  else if (normalized == "bottom") placement= QWK::TutorialPlacement::Bottom;
+  else if (normalized == "left") placement= QWK::TutorialPlacement::Left;
+  else if (normalized == "right") placement= QWK::TutorialPlacement::Right;
+  else return false;
 
   return true;
 }
@@ -127,24 +122,27 @@ bool
 parseStepEntry (tree entry, QWK::TutorialStepConfig& step,
                 QString* errorMessage) {
   if (!is_func (entry, TUPLE, 2)) {
-    if (errorMessage != nullptr) *errorMessage= "Tutorial step entry must be a tuple";
+    if (errorMessage != nullptr)
+      *errorMessage= "Tutorial step entry must be a tuple";
     return false;
   }
 
   QString entryKey;
   if (!treeToQString (entry[0], entryKey) || entryKey != "step") {
-    if (errorMessage != nullptr) *errorMessage= "Tutorial config contains invalid step key";
+    if (errorMessage != nullptr)
+      *errorMessage= "Tutorial config contains invalid step key";
     return false;
   }
 
   tree stepTree= normalizeTuple (entry[1]);
   if (!is_tuple (stepTree)) {
-    if (errorMessage != nullptr) *errorMessage= "Tutorial step payload must be a tuple";
+    if (errorMessage != nullptr)
+      *errorMessage= "Tutorial step payload must be a tuple";
     return false;
   }
 
   bool found= false;
-  step.id  = readField (stepTree, "id", &found);
+  step.id   = readField (stepTree, "id", &found);
   if (!found || step.id.isEmpty ()) {
     if (errorMessage != nullptr) *errorMessage= "Tutorial step is missing id";
     return false;
@@ -153,7 +151,8 @@ parseStepEntry (tree entry, QWK::TutorialStepConfig& step,
   step.title= readField (stepTree, "title", &found);
   if (!found || step.title.isEmpty ()) {
     if (errorMessage != nullptr)
-      *errorMessage= QString ("Tutorial step %1 is missing title").arg (step.id);
+      *errorMessage=
+          QString ("Tutorial step %1 is missing title").arg (step.id);
     return false;
   }
 
@@ -199,8 +198,8 @@ parseStepEntry (tree entry, QWK::TutorialStepConfig& step,
   const QString skip= readField (stepTree, "skip-if-missing", &found);
   if (found && !skip.isEmpty () && !parseBoolLike (skip, step.skipIfMissing)) {
     if (errorMessage != nullptr)
-      *errorMessage=
-          QString ("Tutorial step %1 has invalid skip-if-missing").arg (step.id);
+      *errorMessage= QString ("Tutorial step %1 has invalid skip-if-missing")
+                         .arg (step.id);
     return false;
   }
 
@@ -209,7 +208,8 @@ parseStepEntry (tree entry, QWK::TutorialStepConfig& step,
 
 url
 firstLaunchTutorialConfigPath () {
-  return url_system ("$TEXMACS_PATH/progs/startup-tab/first-launch-tutorial.scm");
+  return url_system (
+      "$TEXMACS_PATH/progs/startup-tab/first-launch-tutorial.scm");
 }
 
 } // namespace
@@ -223,7 +223,7 @@ TutorialTargetRegistry::registerWidget (const QString& id, QWidget* widget) {
 
 void
 TutorialTargetRegistry::registerRectProvider (const QString& id,
-                                              RectProvider provider) {
+                                              RectProvider   provider) {
   m_rectProviders[id]= std::move (provider);
 }
 
@@ -240,13 +240,15 @@ TutorialTargetRegistry::resolve (const QString& id, QMainWindow* window,
 
   if (m_widgetAnchors.contains (id)) {
     QWidget* widget= m_widgetAnchors.value (id);
-    if (widget != nullptr && !widget->isHidden () && widget->size ().isValid ()) {
+    if (widget != nullptr && !widget->isHidden () &&
+        widget->size ().isValid ()) {
       rect= mapRectToWindow (widget, window);
       return rect.isValid ();
     }
   }
 
-  QWidget* widget= window->findChild<QWidget*> (id, Qt::FindChildrenRecursively);
+  QWidget* widget=
+      window->findChild<QWidget*> (id, Qt::FindChildrenRecursively);
   if (widget != nullptr && !widget->isHidden () && widget->size ().isValid ()) {
     rect= mapRectToWindow (widget, window);
     return rect.isValid ();
@@ -282,8 +284,10 @@ TutorialConfigLoader::loadFlow (url path, TutorialFlowConfig& config,
     if (!treeToQString (root[i][0], key)) continue;
 
     if (key == "flow-id") {
-      if (!treeToQString (root[i][1], config.flowId) || config.flowId.isEmpty ()) {
-        if (errorMessage != nullptr) *errorMessage= "Tutorial config flow-id is invalid";
+      if (!treeToQString (root[i][1], config.flowId) ||
+          config.flowId.isEmpty ()) {
+        if (errorMessage != nullptr)
+          *errorMessage= "Tutorial config flow-id is invalid";
         return false;
       }
       flowIdFound= true;
@@ -293,13 +297,15 @@ TutorialConfigLoader::loadFlow (url path, TutorialFlowConfig& config,
     if (key == "version") {
       QString versionValue;
       if (!treeToQString (root[i][1], versionValue)) {
-        if (errorMessage != nullptr) *errorMessage= "Tutorial config version is invalid";
+        if (errorMessage != nullptr)
+          *errorMessage= "Tutorial config version is invalid";
         return false;
       }
       bool ok= false;
       int  v = versionValue.toInt (&ok);
       if (!ok || v <= 0) {
-        if (errorMessage != nullptr) *errorMessage= "Tutorial config version must be positive";
+        if (errorMessage != nullptr)
+          *errorMessage= "Tutorial config version must be positive";
         return false;
       }
       config.version= v;
@@ -315,11 +321,13 @@ TutorialConfigLoader::loadFlow (url path, TutorialFlowConfig& config,
   }
 
   if (!flowIdFound) {
-    if (errorMessage != nullptr) *errorMessage= "Tutorial config is missing flow-id";
+    if (errorMessage != nullptr)
+      *errorMessage= "Tutorial config is missing flow-id";
     return false;
   }
   if (!versionFound) {
-    if (errorMessage != nullptr) *errorMessage= "Tutorial config is missing version";
+    if (errorMessage != nullptr)
+      *errorMessage= "Tutorial config is missing version";
     return false;
   }
   if (config.steps.isEmpty ()) {
@@ -332,9 +340,11 @@ TutorialConfigLoader::loadFlow (url path, TutorialFlowConfig& config,
 
 TutorialBubble::TutorialBubble (QWidget* parent)
     : QWidget (parent), m_titleLabel (new QLabel (this)),
-      m_descriptionLabel (new QLabel (this)), m_progressLabel (new QLabel (this)),
+      m_descriptionLabel (new QLabel (this)),
+      m_progressLabel (new QLabel (this)),
       m_previousButton (new QPushButton (this)),
-      m_nextButton (new QPushButton (this)), m_skipButton (new QPushButton (this)) {
+      m_nextButton (new QPushButton (this)),
+      m_skipButton (new QPushButton (this)) {
   setObjectName ("tutorialBubble");
   setAttribute (Qt::WA_StyledBackground, true);
   setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
@@ -437,7 +447,8 @@ TutorialBubble::setFirstStep (bool first) {
 
 void
 TutorialBubble::setLastStep (bool last) {
-  m_nextButton->setText (last ? qt_translate ("完成") : qt_translate ("下一步"));
+  m_nextButton->setText (last ? qt_translate ("完成")
+                              : qt_translate ("下一步"));
 }
 
 TutorialOverlay::TutorialOverlay (QMainWindow* parentWindow)
@@ -460,7 +471,8 @@ TutorialOverlay::TutorialOverlay (QMainWindow* parentWindow)
 }
 
 void
-TutorialOverlay::setStep (const TutorialStepConfig& step, int index, int total) {
+TutorialOverlay::setStep (const TutorialStepConfig& step, int index,
+                          int total) {
   m_currentStep= step;
   m_bubble->setStep (step, index, total);
   m_bubble->setFirstStep (index == 0);
@@ -515,15 +527,15 @@ TutorialOverlay::bubbleRectForPlacement (TutorialPlacement placement) const {
                             m_highlightRect.bottom () + spacing),
                     size);
     case TutorialPlacement::Left:
-      return QRect (QPoint (m_highlightRect.left () - size.width () - spacing,
-                            m_highlightRect.center ().y () -
-                                size.height () / 2),
-                    size);
+      return QRect (
+          QPoint (m_highlightRect.left () - size.width () - spacing,
+                  m_highlightRect.center ().y () - size.height () / 2),
+          size);
     case TutorialPlacement::Right:
-      return QRect (QPoint (m_highlightRect.right () + spacing,
-                            m_highlightRect.center ().y () -
-                                size.height () / 2),
-                    size);
+      return QRect (
+          QPoint (m_highlightRect.right () + spacing,
+                  m_highlightRect.center ().y () - size.height () / 2),
+          size);
     case TutorialPlacement::Auto:
       break;
     }
@@ -622,7 +634,8 @@ TutorialEngine::TutorialEngine (QObject* parent)
     : QObject (parent), m_currentIndex (-1) {}
 
 bool
-TutorialEngine::start (QMainWindow* hostWindow, const TutorialFlowConfig& config,
+TutorialEngine::start (QMainWindow*                  hostWindow,
+                       const TutorialFlowConfig&     config,
                        const TutorialTargetRegistry& registry) {
   if (hostWindow == nullptr || !config.isValid ()) return false;
 
@@ -662,11 +675,11 @@ TutorialEngine::stop (TutorialFinishReason reason) {
     m_overlay->deleteLater ();
   }
 
-  m_overlay      = nullptr;
-  m_hostWindow   = nullptr;
-  m_currentIndex = -1;
-  m_config       = TutorialFlowConfig ();
-  m_registry     = TutorialTargetRegistry ();
+  m_overlay     = nullptr;
+  m_hostWindow  = nullptr;
+  m_currentIndex= -1;
+  m_config      = TutorialFlowConfig ();
+  m_registry    = TutorialTargetRegistry ();
 
   emit finished (reason);
 }
@@ -733,11 +746,10 @@ TutorialEngine::showStep (int index, int retryCount, int fallbackDirection) {
   const TutorialStepConfig& step= m_config.steps[index];
   if (!m_registry.resolve (step.targetId, m_hostWindow, rect)) {
     if (retryCount < kMaxResolveRetries) {
-      QTimer::singleShot (
-          150, m_overlay,
-          [this, index, retryCount, fallbackDirection] () {
-            showStep (index, retryCount + 1, fallbackDirection);
-          });
+      QTimer::singleShot (150, m_overlay,
+                          [this, index, retryCount, fallbackDirection] () {
+                            showStep (index, retryCount + 1, fallbackDirection);
+                          });
       return;
     }
 
@@ -799,10 +811,9 @@ FirstLaunchTutorialController::FirstLaunchTutorialController (QObject* parent)
              if (!flow.isValid ()) flow= buildFallbackFlow ();
              if (!flow.isValid ()) return;
 
-             const QString prefix=
-                 (reason == TutorialFinishReason::Completed)
-                     ? "tutorial:completed-version"
-                     : "tutorial:skipped-version";
+             const QString prefix= (reason == TutorialFinishReason::Completed)
+                                       ? "tutorial:completed-version"
+                                       : "tutorial:skipped-version";
              set_user_preference (
                  from_qstring (preferenceKey (prefix, flow.flowId)),
                  from_qstring (versionString (flow.version)));
@@ -830,41 +841,27 @@ FirstLaunchTutorialController::buildFallbackFlow () const {
   flow.flowId = "first-launch";
   flow.version= 1;
   flow.steps  = {
-      {"welcome",
-       qt_translate ("认识一下主窗口"),
-       qt_translate ("这是 Liii STEM 的主工作区。教程会依次指出最常用的几个区域，帮助你快速建立基本认知。"),
-       "mainWindowSafeArea",
-       TutorialPlacement::Bottom,
-       12,
-       true},
-      {"windowbar",
-       qt_translate ("这里是窗口顶部"),
-       qt_translate ("这里包含窗口切换、标签页和常用入口。你以后会频繁从这里切换文档和访问全局功能。"),
-       "windowbar",
-       TutorialPlacement::Bottom,
-       10,
-       true},
-      {"toolbar",
-       qt_translate ("这里是主工具栏"),
-       qt_translate ("常见的格式、插入和排版操作会集中在这一带。不同编辑场景下，这里的按钮也会变化。"),
-       "toolbarArea",
-       TutorialPlacement::Bottom,
-       10,
-       true},
-      {"editor",
-       qt_translate ("这里是编辑区"),
-       qt_translate ("文档内容主要在这里输入、排版和修改。无论是公式、文本还是结构化内容，核心操作都围绕这个区域展开。"),
-       "editorArea",
-       TutorialPlacement::Top,
-       12,
-       true},
-      {"assistant",
-       qt_translate ("这里是扩展能力入口"),
-       qt_translate ("这一侧用于放置辅助能力或扩展面板；如果当前面板未显示，教程会退化到登录与能力入口，帮助你找到后续探索的位置。"),
-       "assistantEntry",
-       TutorialPlacement::Left,
-       10,
-       true},
+      {"welcome", qt_translate ("认识一下主窗口"),
+         qt_translate ("这是 Liii STEM "
+                         "的主工作区。教程会依次指出最常用的几个区域，帮助你快速建"
+                         "立基本认知。"),
+         "mainWindowSafeArea", TutorialPlacement::Bottom, 12, true},
+      {"windowbar", qt_translate ("这里是窗口顶部"),
+         qt_translate ("这里包含窗口切换、标签页和常用入口。你以后会频繁从这里切"
+                         "换文档和访问全局功能。"),
+         "windowbar", TutorialPlacement::Bottom, 10, true},
+      {"toolbar", qt_translate ("这里是主工具栏"),
+         qt_translate ("常见的格式、插入和排版操作会集中在这一带。不同编辑场景下"
+                         "，这里的按钮也会变化。"),
+         "toolbarArea", TutorialPlacement::Bottom, 10, true},
+      {"editor", qt_translate ("这里是编辑区"),
+         qt_translate ("文档内容主要在这里输入、排版和修改。无论是公式、文本还是"
+                         "结构化内容，核心操作都围绕这个区域展开。"),
+         "editorArea", TutorialPlacement::Top, 12, true},
+      {"assistant", qt_translate ("这里是扩展能力入口"),
+         qt_translate ("这一侧用于放置辅助能力或扩展面板；如果当前面板未显示，教"
+                         "程会退化到登录与能力入口，帮助你找到后续探索的位置。"),
+         "assistantEntry", TutorialPlacement::Left, 10, true},
   };
   return flow;
 }
@@ -873,118 +870,93 @@ TutorialTargetRegistry
 FirstLaunchTutorialController::buildRegistry (QMainWindow* mainWindow) const {
   TutorialTargetRegistry registry;
 
-  registry.registerRectProvider ("mainWindowSafeArea",
-                                 [] (QMainWindow* hostWindow) {
-                                   return hostWindow->rect ().adjusted (24, 24,
-                                                                        -24, -24);
-                                 });
+  registry.registerRectProvider (
+      "mainWindowSafeArea", [] (QMainWindow* hostWindow) {
+        return hostWindow->rect ().adjusted (24, 24, -24, -24);
+      });
 
-  registry.registerRectProvider ("toolbarArea",
-                                 [] (QMainWindow* hostWindow) {
-                                   const QStringList toolbarIds= {
-                                       "mainToolBar", "modeToolBar",
-                                       "focusToolBar", "menuToolBar"};
+  registry.registerRectProvider ("toolbarArea", [] (QMainWindow* hostWindow) {
+    const QStringList toolbarIds= {"mainToolBar", "modeToolBar", "focusToolBar",
+                                   "menuToolBar"};
 
-                                   QRect rect;
-                                   for (const QString& id : toolbarIds) {
-                                     QWidget* widget= hostWindow->findChild<QWidget*> (
-                                         id, Qt::FindChildrenRecursively);
-                                     if (widget == nullptr || widget->isHidden () ||
-                                         !widget->size ().isValid ())
-                                       continue;
-                                     return mapRectToWindow (widget, hostWindow);
-                                   }
+    QRect rect;
+    for (const QString& id : toolbarIds) {
+      QWidget* widget=
+          hostWindow->findChild<QWidget*> (id, Qt::FindChildrenRecursively);
+      if (widget == nullptr || widget->isHidden () ||
+          !widget->size ().isValid ())
+        continue;
+      return mapRectToWindow (widget, hostWindow);
+    }
 
-                                   QWidget* windowbar=
-                                       hostWindow->findChild<QWidget*> (
-                                           "windowbar",
-                                           Qt::FindChildrenRecursively);
-                                   QWidget* editor= hostWindow->findChild<QWidget*> (
-                                       "editorCanvas",
-                                       Qt::FindChildrenRecursively);
-                                   if (windowbar != nullptr && editor != nullptr &&
-                                       !windowbar->isHidden () &&
-                                       windowbar->size ().isValid () &&
-                                       !editor->isHidden () &&
-                                       editor->size ().isValid ()) {
-                                     QRect windowbarRect=
-                                         mapRectToWindow (windowbar, hostWindow);
-                                     QRect editorRect=
-                                         mapRectToWindow (editor, hostWindow);
-                                     const int top   = windowbarRect.bottom () + 8;
-                                     const int bottom=
-                                         qMin (editorRect.top () - 8, top + 72);
-                                     if (bottom > top) {
-                                       return QRect (
-                                           QPoint (32, top),
-                                           QPoint (hostWindow->rect ().right () - 32,
-                                                   bottom));
-                                     }
-                                   }
+    QWidget* windowbar= hostWindow->findChild<QWidget*> (
+        "windowbar", Qt::FindChildrenRecursively);
+    QWidget* editor= hostWindow->findChild<QWidget*> (
+        "editorCanvas", Qt::FindChildrenRecursively);
+    if (windowbar != nullptr && editor != nullptr && !windowbar->isHidden () &&
+        windowbar->size ().isValid () && !editor->isHidden () &&
+        editor->size ().isValid ()) {
+      QRect     windowbarRect= mapRectToWindow (windowbar, hostWindow);
+      QRect     editorRect   = mapRectToWindow (editor, hostWindow);
+      const int top          = windowbarRect.bottom () + 8;
+      const int bottom       = qMin (editorRect.top () - 8, top + 72);
+      if (bottom > top) {
+        return QRect (QPoint (32, top),
+                      QPoint (hostWindow->rect ().right () - 32, bottom));
+      }
+    }
 
-                                   return QRect ();
-                                 });
+    return QRect ();
+  });
 
-  registry.registerRectProvider ("editorArea",
-                                 [] (QMainWindow* hostWindow) {
-                                   QWidget* editor= hostWindow->findChild<QWidget*> (
-                                       "editorCanvas",
-                                       Qt::FindChildrenRecursively);
-                                   if (editor != nullptr && !editor->isHidden () &&
-                                       editor->size ().isValid ()) {
-                                     return mapRectToWindow (editor, hostWindow);
-                                   }
+  registry.registerRectProvider ("editorArea", [] (QMainWindow* hostWindow) {
+    QWidget* editor= hostWindow->findChild<QWidget*> (
+        "editorCanvas", Qt::FindChildrenRecursively);
+    if (editor != nullptr && !editor->isHidden () &&
+        editor->size ().isValid ()) {
+      return mapRectToWindow (editor, hostWindow);
+    }
 
-                                   QWidget* centralWidget= hostWindow->centralWidget ();
-                                   if (centralWidget == nullptr) return QRect ();
+    QWidget* centralWidget= hostWindow->centralWidget ();
+    if (centralWidget == nullptr) return QRect ();
 
-                                   QRect centralRect=
-                                       mapRectToWindow (centralWidget, hostWindow);
-                                   if (!centralRect.isValid ()) return QRect ();
+    QRect centralRect= mapRectToWindow (centralWidget, hostWindow);
+    if (!centralRect.isValid ()) return QRect ();
 
-                                   QWidget* guestBar=
-                                       hostWindow->findChild<QWidget*> (
-                                           "guestNotificationBar",
-                                           Qt::FindChildrenRecursively);
-                                   if (guestBar != nullptr && !guestBar->isHidden () &&
-                                       guestBar->size ().isValid ()) {
-                                     QRect guestRect=
-                                         mapRectToWindow (guestBar, hostWindow);
-                                     centralRect.setTop (
-                                         qMin (centralRect.bottom (),
-                                               guestRect.bottom () + 8));
-                                   }
+    QWidget* guestBar= hostWindow->findChild<QWidget*> (
+        "guestNotificationBar", Qt::FindChildrenRecursively);
+    if (guestBar != nullptr && !guestBar->isHidden () &&
+        guestBar->size ().isValid ()) {
+      QRect guestRect= mapRectToWindow (guestBar, hostWindow);
+      centralRect.setTop (
+          qMin (centralRect.bottom (), guestRect.bottom () + 8));
+    }
 
-                                   return centralRect.adjusted (8, 8, -8, -8);
-                                 });
+    return centralRect.adjusted (8, 8, -8, -8);
+  });
 
-  registry.registerRectProvider ("assistantEntry",
-                                 [] (QMainWindow* hostWindow) {
-                                   const QStringList ids= {"sideTools",
-                                                           "auxiliaryWidget",
-                                                           "guestNotificationBar",
-                                                           "login-button",
-                                                           "statusBar"};
-                                   for (const QString& id : ids) {
-                                     QWidget* widget= (id == "statusBar")
-                                                          ? hostWindow->statusBar ()
-                                                          : hostWindow->findChild<
-                                                                QWidget*> (
-                                                                id,
-                                                                Qt::FindChildrenRecursively);
-                                     if (widget == nullptr || widget->isHidden () ||
-                                         !widget->size ().isValid ())
-                                       continue;
-                                     return mapRectToWindow (widget, hostWindow);
-                                   }
-                                   return QRect ();
-                                 });
+  registry.registerRectProvider (
+      "assistantEntry", [] (QMainWindow* hostWindow) {
+        const QStringList ids= {"sideTools", "auxiliaryWidget",
+                                "guestNotificationBar", "login-button",
+                                "statusBar"};
+        for (const QString& id : ids) {
+          QWidget* widget= (id == "statusBar")
+                               ? hostWindow->statusBar ()
+                               : hostWindow->findChild<QWidget*> (
+                                     id, Qt::FindChildrenRecursively);
+          if (widget == nullptr || widget->isHidden () ||
+              !widget->size ().isValid ())
+            continue;
+          return mapRectToWindow (widget, hostWindow);
+        }
+        return QRect ();
+      });
 
-  const QStringList widgetIds= {"windowbar",          "mainToolBar",
-                                "modeToolBar",        "focusToolBar",
-                                "menuToolBar",        "editorCanvas",
-                                "sideTools",          "guestNotificationBar",
-                                "login-button",       "auxiliaryWidget"};
+  const QStringList widgetIds= {
+      "windowbar",    "mainToolBar",    "modeToolBar", "focusToolBar",
+      "menuToolBar",  "editorCanvas",   "sideTools",   "guestNotificationBar",
+      "login-button", "auxiliaryWidget"};
   for (const QString& id : widgetIds) {
     registry.registerWidget (
         id, mainWindow->findChild<QWidget*> (id, Qt::FindChildrenRecursively));
@@ -1028,7 +1000,8 @@ FirstLaunchTutorialController::preferenceKey (const QString& prefix,
 }
 
 void
-FirstLaunchTutorialController::maybeStartForMainWindow (QMainWindow* mainWindow) {
+FirstLaunchTutorialController::maybeStartForMainWindow (
+    QMainWindow* mainWindow) {
   if (mainWindow == nullptr) return;
 
   TutorialFlowConfig flow= loadFirstLaunchFlow ();

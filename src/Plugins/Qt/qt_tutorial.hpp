@@ -24,20 +24,9 @@ class QWheelEvent;
 
 namespace QWK {
 
-enum class TutorialPlacement {
-  Auto,
-  Top,
-  Bottom,
-  Left,
-  Right
-};
+enum class TutorialPlacement { Auto, Top, Bottom, Left, Right };
 
-enum class TutorialFinishReason {
-  Completed,
-  Skipped,
-  Cancelled,
-  HostClosed
-};
+enum class TutorialFinishReason { Completed, Skipped, Cancelled, HostClosed };
 
 struct TutorialStepConfig {
   QString           id;
@@ -165,7 +154,7 @@ private:
 
   static constexpr int kMaxResolveRetries= 10;
 
-  QPointer<QMainWindow> m_hostWindow;
+  QPointer<QMainWindow>     m_hostWindow;
   QPointer<TutorialOverlay> m_overlay;
   TutorialTargetRegistry    m_registry;
   TutorialFlowConfig        m_config;
@@ -183,13 +172,12 @@ public:
 private:
   explicit FirstLaunchTutorialController (QObject* parent= nullptr);
 
-  TutorialFlowConfig        loadFirstLaunchFlow () const;
-  TutorialFlowConfig        buildFallbackFlow () const;
-  TutorialTargetRegistry    buildRegistry (QMainWindow* mainWindow) const;
-  bool                      shouldStart (const TutorialFlowConfig& flow) const;
-  QString                   versionString (int version) const;
-  QString                   preferenceKey (const QString& prefix,
-                                           const QString& flowId) const;
+  TutorialFlowConfig     loadFirstLaunchFlow () const;
+  TutorialFlowConfig     buildFallbackFlow () const;
+  TutorialTargetRegistry buildRegistry (QMainWindow* mainWindow) const;
+  bool                   shouldStart (const TutorialFlowConfig& flow) const;
+  QString                versionString (int version) const;
+  QString preferenceKey (const QString& prefix, const QString& flowId) const;
 
   TutorialEngine* m_engine;
   bool            m_startedThisSession;
