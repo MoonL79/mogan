@@ -78,9 +78,9 @@ CONCRETE_TEMPLATE_CODE (polynomial, typename, T);
 
 TMPL class unary_properties<polynomial<T>> {
 public:
-  typedef T                                       scalar_type;
-  typedef typename unary_properties<T>::norm_type norm_type;
-  typedef int                                     index_type;
+  using scalar_type= T;
+  using norm_type  = typename unary_properties<T>::norm_type;
+  using index_type = int;
   static inline tree                              index_name (index_type i) {
     return tree (moebius::RSUB, "x", as_string (i + 1));
   }

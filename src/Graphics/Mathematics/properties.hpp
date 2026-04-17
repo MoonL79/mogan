@@ -15,9 +15,9 @@
 
 template <typename T> class unary_properties {
 public:
-  typedef T          scalar_type;
-  typedef T          norm_type;
-  typedef int        index_type;
+  using scalar_type= T;
+  using norm_type  = T;
+  using index_type = int;
   static inline tree index_name (index_type i) {
     (void) i;
     return "x";
@@ -30,7 +30,7 @@ public:
 
 template <typename T, typename U> class binary_properties {
 public:
-  typedef U product_type;
+  using product_type = U;
 };
 
 #endif // PROPERTIES_H
