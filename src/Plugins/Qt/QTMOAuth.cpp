@@ -47,7 +47,7 @@ QTMOAuth::QTMOAuth (QObject* parent) {
 
   // 解析端口列表字符串，格式如
   // "6029,8087,9256,7438,5173,6391,8642,9901,44118,55055,1895"
-  QString    portListQStr= QString ((char*) portListStr).trimmed ();
+  QString    portListQStr= QString (static_cast<char*> (portListStr)).trimmed ();
   QList<int> portList;
 
   if (!portListQStr.isEmpty ()) {
@@ -107,8 +107,8 @@ QTMOAuth::QTMOAuth (QObject* parent) {
   m_reply->setCallbackText (customHtml);
 
   oauth2.setReplyHandler (m_reply);
-  oauth2.setScope ((char*) scope);
-  oauth2.setClientIdentifier ((char*) clientIdentifier);
+  oauth2.setScope (static_cast<char*> (scope));
+  oauth2.setClientIdentifier (static_cast<char*> (clientIdentifier));
 
   connect (&oauth2, &QOAuth2AuthorizationCodeFlow::authorizeWithBrowser, this,
            &QDesktopServices::openUrl);
@@ -362,18 +362,18 @@ QTMOAuth::loadExistingToken () {
 
   // 加载access_token
   c_string tokenStr (as_string (call ("account-load-token")));
-  QString  token= QString ((char*) tokenStr);
+  QString  token= QString (static_cast<char*> (tokenStr));
   if (!token.isEmpty ()) {
     oauth2.setToken (token);
   }
 
   // 加载refresh_token
   c_string refreshTokenStr (as_string (call ("account-load-refresh-token")));
-  m_refreshToken= QString ((char*) refreshTokenStr);
+  m_refreshToken= QString (static_cast<char*> (refreshTokenStr);
 
   // 加载token过期时间
   c_string expiryStr (as_string (call ("account-load-token-expiry")));
-  QString  expiryTimeStr= QString ((char*) expiryStr);
+  QString  expiryTimeStr= QString (static_cast<char*> (expiryStr);
   if (!expiryTimeStr.isEmpty ()) {
     m_tokenExpiryTime= expiryTimeStr.toLongLong ();
   }
@@ -433,7 +433,7 @@ QTMOAuth::getAuthorizationUrl () {
   eval ("(use-modules (liii account))");
   c_string authorizationUrl (
       as_string (call ("account-oauth2-config", "authorization-url")));
-  return QUrl ((char*) authorizationUrl);
+  return QUrl (static_cast<char*> (authorizationUrl);
 }
 
 QUrl
@@ -441,5 +441,5 @@ QTMOAuth::getAccessTokenUrl () {
   eval ("(use-modules (liii account))");
   c_string accessTokenUrl (
       as_string (call ("account-oauth2-config", "access-token-url")));
-  return QUrl ((char*) accessTokenUrl);
+  return QUrl (static_cast<char*> (accessTokenUrl);
 }
