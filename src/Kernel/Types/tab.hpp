@@ -12,10 +12,11 @@
 #ifndef TAB_H
 #define TAB_H
 #include "tree.hpp"
+#include <memory>
 
 enum tab_kind { tab_all, tab_first, tab_last };
 
-class tab_rep : concrete_struct {
+class tab_rep {
 public:
   int      pos;
   double   weight;
@@ -28,10 +29,18 @@ public:
 };
 
 class tab {
-  CONCRETE (tab);
-  inline tab () : rep (tm_new<tab_rep> ()) {}
-  inline tab (int pos, tree t) : rep (tm_new<tab_rep> (pos, t)) {}
+  std::shared_ptr<tab_rep> rep;
+public:
+  inline tab () : rep (std::make_shared<tab_rep> ()) {}
+  inline tab (int pos, tree t) : rep (std::make_shared<tab_rep> (pos, t)) {}
+  
+  inline tab_rep* operator->() { return rep.get (); }
+  inline const tab_rep* operator->() const { return rep.get (); }
+  inline tab_rep& operator*() { return *rep; }
+  inline const tab_rep& operator*() const { return *rep; }
+  
+  inline bool operator== (const tab& other) const { return rep == other.rep; }
+  inline bool operator!= (const tab& other) const { return rep != other.rep; }
 };
-CONCRETE_CODE (tab);
 
 #endif // defined TAB_H

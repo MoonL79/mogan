@@ -25,11 +25,9 @@ space_rep::space_rep (SI min2, SI def2, SI max2) {
 
 space_rep::space_rep (SI def2) { min= def= max= def2; }
 
-space::space (SI min, SI def, SI max) {
-  rep= tm_new<space_rep> (min, def, max);
-}
+space::space (SI min, SI def, SI max) : rep (std::make_shared<space_rep> (min, def, max)) {}
 
-space::space (SI def) { rep= tm_new<space_rep> (def); }
+space::space (SI def) : rep (std::make_shared<space_rep> (def)) {}
 
 space::operator tree () {
   return tuple (as_string (rep->min), as_string (rep->def),

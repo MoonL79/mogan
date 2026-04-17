@@ -15,8 +15,9 @@
 
 #include "list.hpp"
 #include "tree.hpp"
+#include <memory>
 
-class rectangle_rep : concrete_struct {
+class rectangle_rep {
 public:
   SI x1, y1;
   SI x2, y2;
@@ -26,11 +27,16 @@ public:
 };
 
 class rectangle {
-  CONCRETE (rectangle);
+  std::shared_ptr<rectangle_rep> rep;
+public:
   rectangle (SI x1b= 0, SI y1b= 0, SI x2b= 0, SI y2b= 0);
   operator tree ();
+  
+  inline rectangle_rep* operator->() { return rep.get (); }
+  inline const rectangle_rep* operator->() const { return rep.get (); }
+  inline rectangle_rep& operator*() { return *rep; }
+  inline const rectangle_rep& operator*() const { return *rep; }
 };
-CONCRETE_CODE (rectangle);
 
 tm_ostream& operator<< (tm_ostream& out, rectangle r);
 rectangle   copy (rectangle r);
