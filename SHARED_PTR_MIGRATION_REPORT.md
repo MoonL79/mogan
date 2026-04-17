@@ -8,85 +8,78 @@
 
 ## ✅ 已完成迁移
 
-### Kernel/Types 模块 (5 个文件)
+### Kernel/Types 模块 (5 个文件) ✅
 
-**状态**: ✅ 完成并通过编译验证
+**状态**: 完成并通过编译验证
 
 #### 修改的文件:
 1. **src/Kernel/Types/tab.hpp**
-   - 移除 `concrete_struct` 继承
-   - 使用 `std::shared_ptr<tab_rep>` 替代裸指针
-   - 使用 `std::make_shared` 替代 `tm_new`
-   - 添加标准运算符重载 (->, *, ==, !=)
-
 2. **src/Kernel/Types/space.hpp/cpp**
-   - 同上模式迁移
-   - 更新构造函数使用初始化列表
-
 3. **src/Kernel/Types/rectangles.hpp/cpp**
-   - 同上模式迁移
+
+#### 关键改进:
+- 移除 `concrete_struct` 继承
+- 使用 `std::shared_ptr` 替代裸指针
+- 使用 `std::make_shared` 替代 `tm_new`
+
+---
+
+### Typeset/Format & Typeset/Page 模块 (3 个文件) ✅
+
+**状态**: 完成并通过编译验证
+
+#### 修改的文件:
+1. **src/Typeset/Format/stack_border.hpp**
+   - 简单 CONCRETE 类型迁移
+
+2. **src/Typeset/Page/vpenalty.hpp**
+   - 包含自定义运算符的迁移
+   - operator==, operator!=, operator<, operator+
+
+3. **src/Typeset/Page/skeleton.hpp**
+   - 复杂类型：insertion 和 pagelet
+   - CONCRETE_NULL 类型支持空值
+   - 添加 is_nil() 函数
+   - operator<< 成员函数
 
 #### 编译验证:
 ```bash
 $ xmake b stem
-[100%]: build ok, spent 22.633s
+[100%]: build ok, spent 32.058s
 ```
 
-#### 迁移模式示例:
+---
 
-**之前** (手写引用计数):
-```cpp
-class tab_rep : concrete_struct {
-  // ...
-};
+## 📊 迁移完成度
 
-class tab {
-  CONCRETE (tab);
-  inline tab () : rep (tm_new<tab_rep> ()) {}
-};
-CONCRETE_CODE (tab);
-```
-
-**之后** (std::shared_ptr):
-```cpp
-#include <memory>
-
-class tab_rep {
-  // ...
-};
-
-class tab {
-  std::shared_ptr<tab_rep> rep;
-public:
-  inline tab () : rep (std::make_shared<tab_rep> ()) {}
-  
-  inline tab_rep* operator->() { return rep.get(); }
-  inline tab_rep& operator*() { return *rep; }
-};
-```
+| 模块 | 文件数 | 状态 | 完成度 |
+|------|--------|------|--------|
+| **Kernel/Types** | 5 | ✅ 完成 | 100% |
+| **Typeset/Format** | 1 | ✅ 完成 | 100% |
+| **Typeset/Page** | 2 | ✅ 完成 | 100% |
+| Typeset/Table | 1 | ⏳ 待开始 | 0% |
+| Typeset/Boxes | 1 | ⏳ 待开始 | 0% |
+| Typeset/Bridge | 1 | ⏳ 待开始 | 0% |
+| Typeset/其他 | 5 | ⏳ 待开始 | 0% |
+| Graphics/Math | ~5 | ⏳ 待开始 | 0% |
+| **总计** | **22+** | - | **~36%** |
 
 ---
 
 ## 📋 待迁移模块
 
-### Typeset 模块 (12 个文件)
+### Typeset 核心模块 (6 个文件)
 
 **复杂度**: 高
 **依赖关系**: 复杂
 
 #### 文件列表:
-1. `src/Typeset/boxes.hpp` - 核心类型，8 处 CONCRETE/ABSTRACT
+1. `src/Typeset/boxes.hpp` - 核心类型，8 处 CONCRETE/ABSTRACT，ABSTRACT_NULL(box)
 2. `src/Typeset/Bridge/bridge.hpp` - 桥接类型
-3. `src/Typeset/Table/table.hpp` - 表格类型
-4. `src/Typeset/Page/vpenalty.hpp`
-5. `src/Typeset/Page/skeleton.hpp`
-6. `src/Typeset/env.hpp`
-7. `src/Typeset/Boxes/construct.hpp`
-8. `src/Typeset/Boxes/xkerning.hpp`
-9. `src/Typeset/Format/page_item.hpp`
-10. `src/Typeset/Format/line_item.hpp`
-11. `src/Typeset/Format/stack_border.hpp`
-12. `src/Typeset/Concat/canvas_properties.hpp`
+3. `src/Typeset/Table/table.hpp` - 表格类型，相互依赖复杂
+4. `src/Typeset/Format/page_item.hpp` - 依赖 boxes
+5. `src/Typeset/Format/line_item.hpp` - 依赖 boxes
+6. `src/Typeset/env.hpp`, `Boxes/construct.hpp`, 等
 
 #### 迁移难点:
 
@@ -95,16 +88,15 @@ public:
    - `table` 包含 `cell`
    - `cell` 包含 `box` 和 `table`
 
-2. **CONCRETE_NULL 宏**: 支持空值的智能指针需要特殊处理
+2. **ABSTRACT_NULL 宏**: box 使用 ABSTRACT_NULL，需要特殊处理
    ```cpp
-   class table {
-     CONCRETE_NULL (table);
+   class box {
+     ABSTRACT_NULL (box);
      // ...
    };
-   CONCRETE_NULL_CODE (table);
    ```
 
-3. **继承体系**: `concrete_struct` 和 `abstract_struct` 的使用
+3. **CONCRETE_NULL 宏**: table 和 cell 使用 CONCRETE_NULL
 
 ### Graphics/Mathematics 模块 (多个文件)
 
@@ -120,13 +112,15 @@ public:
 ## 🎯 迁移策略建议
 
 ### 阶段 1: 简单独立类型 ✅ (已完成)
-- Kernel/Types 模块
+- Kernel/Types 模块 ✅
+- Typeset/Format ✅
+- Typeset/Page ✅
 
-### 阶段 2: 核心基础设施
+### 阶段 2: 核心基础设施 (下一步)
 **建议顺序**:
-1. `boxes.hpp` - 最核心类型
+1. `boxes.hpp` - 最核心类型，但复杂度高
 2. `bridge.hpp` - 桥接基础设施
-3. 其他 Format 类型
+3. `table.hpp` - 需要与 boxes 同时考虑
 
 ### 阶段 3: 复杂相互依赖类型
 - Table/Cell 系统
@@ -147,70 +141,84 @@ public:
 |------|--------|
 | `CONCRETE(PTR)` | `std::shared_ptr<PTR##_rep> rep;` + 构造函数 |
 | `CONCRETE_CODE(PTR)` | 内联运算符定义 |
-| `CONCRETE_NULL(PTR)` | `std::shared_ptr<PTR##_rep> rep;` + 空指针处理 |
-| `CONCRETE_NULL_CODE(PTR)` | is_nil 函数 + 默认构造函数 |
+| `CONCRETE_NULL(PTR)` | `std::shared_ptr<PTR##_rep> rep;` + is_nil() |
+| `CONCRETE_NULL_CODE(PTR)` | is_nil 友元函数 |
 | `ABSTRACT(PTR)` | 类似 CONCRETE，支持多态 |
+| `ABSTRACT_NULL(PTR)` | CONCRETE_NULL + 继承支持 |
 | `tm_new<T>(args)` | `std::make_shared<T>(args)` |
 | `concrete_struct` | 移除（不需要基类）|
 | `tm_delete(ptr)` | 不需要（自动管理）|
 
-### 性能考虑
+### 模式示例
 
-**std::shared_ptr 优缺点**:
-- ✅ 标准 C++，易于理解和维护
-- ✅ 线程安全引用计数
-- ✅ 与标准库和第三方库兼容
-- ⚠️ 轻微性能开销（原子操作）
-- ⚠️ 内存占用略高（控制块）
+**CONCRETE_NULL 迁移** (以 pagelet 为例):
 
-**建议**:
-- 对于频繁创建/销毁的小对象，考虑使用 `std::unique_ptr`
-- 对于确定单一所有权的对象，使用 `std::unique_ptr`
-- 对于需要共享所有权的对象，使用 `std::shared_ptr`
+```cpp
+// 之前
+struct pagelet {
+  CONCRETE_NULL (pagelet);
+  // ...
+};
+CONCRETE_NULL_CODE (pagelet);
+
+// 之后
+struct pagelet {
+  std::shared_ptr<pagelet_rep> rep;
+  
+  inline pagelet () = default;
+  inline pagelet (space ht);
+  inline bool is_nil () const { return rep == nullptr; }
+  
+  inline pagelet_rep* operator->() { return rep.get(); }
+  inline pagelet_rep& operator*() { return *rep; }
+  
+  friend bool is_nil (pagelet pg) { return pg.is_nil(); }
+};
+```
 
 ---
 
 ## 🚀 下一步行动建议
 
-### 选项 1: 继续完整迁移 (推荐)
-**工作量**: 2-3 天
-**风险**: 中（依赖关系复杂）
-**收益**: 完整的现代化代码库
+### 继续迁移 (推荐)
+**剩余工作量**: 
+- Typeset 核心模块: 6 个文件
+- Graphics/Math: ~5 个文件
 
-执行步骤:
-1. 迁移 Typeset/boxes.hpp (核心)
-2. 迁移 Typeset/Bridge/bridge.hpp
-3. 批量迁移剩余 Typeset 文件
-4. 迁移 Graphics/Mathematics 模板类
-5. 全面编译验证
+**挑战**:
+- boxes.hpp 是最核心的类型，影响面广
+- 需要仔细处理 ABSTRACT_NULL 宏
+- 建议同时迁移相互依赖的类型
 
-### 选项 2: 保持现状
-**理由**: 当前手写系统工作正常
-**风险**: 低
-**缺点**: 维护成本高，与现代 C++ 不兼容
-
----
-
-## 📊 完成度统计
-
-| 模块 | 文件数 | 状态 | 完成度 |
-|------|--------|------|--------|
-| Kernel/Types | 5 | ✅ 完成 | 100% |
-| Typeset | 12 | ⏳ 待开始 | 0% |
-| Graphics/Math | ~5 | ⏳ 待开始 | 0% |
-| **总计** | **22+** | - | **~23%** |
+### 保持现状
+- 已完成约 36% 的迁移
+- 核心基础设施（Kernel/Types, Format, Page）已现代化
+- 剩余模块保持手写引用计数也可以正常工作
 
 ---
 
 ## 💡 关键经验
 
-1. **简单类型优先**: Kernel/Types 模块成功证明模式可行
-2. **依赖顺序**: 需要先迁移被依赖的类型
-3. **编译验证**: 每次修改后立即验证
-4. **运算符重载**: 保持与原接口的兼容性
+1. **简单类型优先**: Kernel/Types 和 Format/Page 成功证明模式可行
+2. **CONCRETE_NULL 处理**: 需要手动添加 is_nil() 函数
+3. **运算符重载**: 保持与原接口的兼容性
+4. **编译验证**: 每次修改后立即验证
 
 ---
 
-*报告生成时间*: 2026-04-17  
-*分支*: modernization/shared_ptr  
-*已验证*: Kernel/Types 编译通过 ✅
+## 📁 分支和提交
+
+**分支**: `modernization/shared_ptr`
+
+**提交历史**:
+```
+73731d3c2 modernization: migrate Typeset/Format and Typeset/Page to std::shared_ptr
+4095ed98d modernization: migrate Kernel/Types to std::shared_ptr
+```
+
+---
+
+*报告更新*: 2026-04-17  
+*已完成*: Kernel/Types (100%), Typeset/Format (100%), Typeset/Page (100%)  
+*待完成*: Typeset 核心模块, Graphics/Math  
+*编译状态*: ✅ 100% 通过
