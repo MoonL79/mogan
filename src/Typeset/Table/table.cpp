@@ -19,6 +19,13 @@ using namespace moebius;
 lazy make_lazy_paragraph (edit_env env, array<box> bs, path ip);
 
 /******************************************************************************
+ * Table constructors
+ ******************************************************************************/
+
+table::table (edit_env env, int status, int i0, int j0)
+    : rep (std::make_shared<table_rep> (env, status, i0, j0)) {}
+
+/******************************************************************************
  * Tables
  ******************************************************************************/
 

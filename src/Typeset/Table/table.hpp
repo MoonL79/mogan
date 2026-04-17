@@ -16,11 +16,12 @@
 #include "Format/stack_border.hpp"
 #include "formatter.hpp"
 #include "typesetter.hpp"
+#include <memory>
 
 class cell;
 class table;
 
-class table_rep : public concrete_struct {
+class table_rep {
 protected:
   hashmap<string, tree> var; // formatting variables
 
@@ -90,13 +91,22 @@ public:
 };
 
 class table {
-  CONCRETE_NULL (table);
-  inline table (edit_env env, int status= 0, int i0= 0, int j0= 0)
-      : rep (tm_new<table_rep> (env, status, i0, j0)) {}
+  std::shared_ptr<table_rep> rep;
+public:
+  table () = default;
+  table (edit_env env, int status= 0, int i0= 0, int j0= 0);
+  
+  inline bool is_nil () const { return rep == nullptr; }
+  
+  inline table_rep* operator->() { return rep.get (); }
+  inline const table_rep* operator->() const { return rep.get (); }
+  inline table_rep& operator*() { return *rep; }
+  inline const table_rep& operator*() const { return *rep; }
+  
+  friend bool is_nil (table t) { return t.is_nil (); }
 };
-CONCRETE_NULL_CODE (table);
 
-class cell_rep : public concrete_struct {
+class cell_rep {
 protected:
   hashmap<string, tree> var; // formatting variables
 
@@ -158,10 +168,20 @@ public:
 };
 
 class cell {
-  CONCRETE_NULL (cell);
-  inline cell (edit_env env) : rep (tm_new<cell_rep> (env)) {}
+  std::shared_ptr<cell_rep> rep;
+public:
+  cell () = default;
+  cell (edit_env env);
+  
+  inline bool is_nil () const { return rep == nullptr; }
+  
+  inline cell_rep* operator->() { return rep.get (); }
+  inline const cell_rep* operator->() const { return rep.get (); }
+  inline cell_rep& operator*() { return *rep; }
+  inline const cell_rep& operator*() const { return *rep; }
+  
+  friend bool is_nil (cell c) { return c.is_nil (); }
 };
-CONCRETE_NULL_CODE (cell);
 
 void extract_format (tree fm, tree* r, int n);
 
