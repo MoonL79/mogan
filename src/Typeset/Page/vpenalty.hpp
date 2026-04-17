@@ -26,6 +26,7 @@
 #ifndef VPENALTY_H
 #define VPENALTY_H
 #include "space.hpp"
+#include <memory>
 
 #define EXTEND_PAGE_PENALTY 33
 #define REDUCE_PAGE_PENALTY 33
@@ -35,7 +36,7 @@
 #define LONGER_LATTER_COLUMN 1000
 #define BAD_FLOATS_PENALTY 1000000
 
-struct vpenalty_rep : concrete_struct {
+struct vpenalty_rep {
   int pen; // main penalty
   int exc; // excentricity: square of shift with respect to ideal position
   inline vpenalty_rep () : pen (0), exc (0) {}
@@ -44,17 +45,18 @@ struct vpenalty_rep : concrete_struct {
 };
 
 class vpenalty {
-  CONCRETE (vpenalty);
-  inline vpenalty () : rep (tm_new<vpenalty_rep> ()) {}
-  inline vpenalty (int pen) : rep (tm_new<vpenalty_rep> (pen)) {}
-  inline vpenalty (int pen, int exc) : rep (tm_new<vpenalty_rep> (pen, exc)) {}
-  inline bool operator== (vpenalty pen) {
+  std::shared_ptr<vpenalty_rep> rep;
+public:
+  inline vpenalty () : rep (std::make_shared<vpenalty_rep> ()) {}
+  inline vpenalty (int pen) : rep (std::make_shared<vpenalty_rep> (pen)) {}
+  inline vpenalty (int pen, int exc) : rep (std::make_shared<vpenalty_rep> (pen, exc)) {}
+  inline bool operator== (vpenalty pen) const {
     return (rep->pen == pen->pen) && (rep->exc == pen->exc);
   }
-  inline bool operator!= (vpenalty pen) {
+  inline bool operator!= (vpenalty pen) const {
     return (rep->pen != pen->pen) || (rep->exc != pen->exc);
   }
-  inline bool operator< (vpenalty pen) {
+  inline bool operator< (vpenalty pen) const {
     return (rep->pen < pen->pen) ||
            ((rep->pen == pen->pen) && (rep->exc < pen->exc));
   }
@@ -62,11 +64,15 @@ class vpenalty {
     rep->pen+= pen->pen;
     rep->exc+= pen->exc;
   }
-  inline vpenalty operator+ (vpenalty pen) {
+  inline vpenalty operator+ (vpenalty pen) const {
     return vpenalty (rep->pen + pen->pen, rep->exc + pen->exc);
   }
+  
+  inline vpenalty_rep* operator->() { return rep.get (); }
+  inline const vpenalty_rep* operator->() const { return rep.get (); }
+  inline vpenalty_rep& operator*() { return *rep; }
+  inline const vpenalty_rep& operator*() const { return *rep; }
 };
-CONCRETE_CODE (vpenalty);
 
 tm_ostream& operator<< (tm_ostream& out, vpenalty pen);
 

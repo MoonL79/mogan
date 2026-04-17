@@ -15,6 +15,7 @@
 #include "path.hpp"
 #include "space.hpp"
 #include "tree.hpp"
+#include <memory>
 
 /******************************************************************************
  * Abstract definitions of skeletons, pagelets and insertions
@@ -23,15 +24,23 @@
 struct pagelet;
 struct insertion_rep;
 struct insertion {
-  CONCRETE (insertion);
-  inline insertion ();
+  std::shared_ptr<insertion_rep> rep;
+
+  inline insertion () : rep (std::make_shared<insertion_rep> ()) {}
   inline insertion (tree type, path begin, path end);
   inline insertion (tree type, array<pagelet> sk);
+
+  inline insertion_rep* operator->() { return rep.get (); }
+  inline const insertion_rep* operator->() const { return rep.get (); }
+  inline insertion_rep& operator*() { return *rep; }
+  inline const insertion_rep& operator*() const { return *rep; }
+
   friend bool        operator== (insertion ins1, insertion ins2);
   friend bool        operator!= (insertion ins1, insertion ins2);
   friend tm_ostream& operator<< (tm_ostream& out, insertion ins);
 };
-struct pagelet_rep : concrete_struct {
+
+struct pagelet_rep {
   array<insertion> ins;
   space            ht;
   vpenalty         pen;
@@ -41,13 +50,24 @@ struct pagelet_rep : concrete_struct {
 };
 
 struct pagelet {
-  CONCRETE_NULL (pagelet);
+  std::shared_ptr<pagelet_rep> rep;
+
+  inline pagelet () = default;
   inline pagelet (space ht);
-  void               operator<< (insertion ins);
-  void               operator<< (space ht);
-  friend bool        operator== (pagelet pg1, pagelet pg2);
-  friend bool        operator!= (pagelet pg1, pagelet pg2);
+  inline bool is_nil () const { return rep == nullptr; }
+
+  inline pagelet_rep* operator->() { return rep.get (); }
+  inline const pagelet_rep* operator->() const { return rep.get (); }
+  inline pagelet_rep& operator*() { return *rep; }
+  inline const pagelet_rep& operator*() const { return *rep; }
+
+  friend bool is_nil (pagelet pg) { return pg.is_nil (); }
+  friend bool operator== (pagelet pg1, pagelet pg2);
+  friend bool operator!= (pagelet pg1, pagelet pg2);
   friend tm_ostream& operator<< (tm_ostream& out, pagelet pg);
+  
+  inline void operator<< (insertion ins);
+  inline void operator<< (space spc);
 };
 typedef array<pagelet> skeleton;
 
@@ -55,7 +75,7 @@ typedef array<pagelet> skeleton;
  * Code for insertions
  ******************************************************************************/
 
-struct insertion_rep : concrete_struct {
+struct insertion_rep {
   tree     type;    // type of insertion
   path     begin;   // begin location in array of page_items
   path     end;     // end location in array of page_items
@@ -73,27 +93,20 @@ struct insertion_rep : concrete_struct {
       : type (type2), begin (begin2), end (end2), nr_cols (1) {}
   insertion_rep (tree type, skeleton sk);
 };
-CONCRETE_CODE (insertion);
 
-inline insertion::insertion () { rep= tm_new<insertion_rep> (); }
+inline insertion::insertion (tree type, path begin, path end)
+    : rep (std::make_shared<insertion_rep> (type, begin, end)) {}
 
-inline insertion::insertion (tree type, path begin, path end) {
-  rep= tm_new<insertion_rep> (type, begin, end);
-}
-
-inline insertion::insertion (tree type, skeleton sk) {
-  rep= tm_new<insertion_rep> (type, sk);
-}
+inline insertion::insertion (tree type, skeleton sk)
+    : rep (std::make_shared<insertion_rep> (type, sk)) {}
 
 /******************************************************************************
  * Code for pagelets
  ******************************************************************************/
 
-CONCRETE_NULL_CODE (pagelet);
-
 inline pagelet_rep::pagelet_rep (space ht2) : ht (ht2) {}
 
-inline pagelet::pagelet (space ht) { rep= tm_new<pagelet_rep> (ht); }
+inline pagelet::pagelet (space ht) : rep (std::make_shared<pagelet_rep> (ht)) {}
 
 inline void
 pagelet::operator<< (insertion ins) {
