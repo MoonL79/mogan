@@ -47,7 +47,7 @@ QTMOAuth::QTMOAuth (QObject* parent) {
 
   // 解析端口列表字符串，格式如
   // "6029,8087,9256,7438,5173,6391,8642,9901,44118,55055,1895"
-  QString    portListQStr= QString (static_cast<char*> (portListStr)).trimmed ();
+  QString portListQStr= QString (static_cast<char*> (portListStr)).trimmed ();
   QList<int> portList;
 
   if (!portListQStr.isEmpty ()) {

@@ -151,8 +151,8 @@ dyn_link_rep::write (string s, int channel) {
   c_string _s (s);
   char*    _errors= nullptr;
   char*    _r     = pack->evaluate (_s, _session, &_errors);
-  ret= string (_r == nullptr ? (_errors == nullptr ? ((char*) "Error") : _errors)
-                          : _r);
+  ret             = string (
+      _r == nullptr ? (_errors == nullptr ? ((char*) "Error") : _errors) : _r);
   if (!is_nil (this->feed_cmd)) this->feed_cmd->apply ();
 #endif
 }

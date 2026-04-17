@@ -30,7 +30,7 @@ public:
 
 template <typename T, typename U> class binary_properties {
 public:
-  using product_type = U;
+  using product_type= U;
 };
 
 #endif // PROPERTIES_H

@@ -91,8 +91,9 @@ create_pdf_image_raw (PDFWriter& pdfw, string raw_data, SI width, SI height,
       objectsContext.WriteKeyword ("stream");
       {
         c_string buf (raw_data);
-        objectsContext.StartFreeContext ()->Write (reinterpret_cast<unsigned char*> (static_cast<char*> (buf)),
-                                                   N (raw_data));
+        objectsContext.StartFreeContext ()->Write (
+            reinterpret_cast<unsigned char*> (static_cast<char*> (buf)),
+            N (raw_data));
         objectsContext.EndFreeContext ();
       }
       objectsContext.EndLine ();
@@ -166,7 +167,8 @@ pdf_image_rep::flush_png (PDFWriter& pdfw, url image) {
   c_string        f (concretize (image));
   PNGImageHandler pngHandler;
   InputFile       file;
-  if (file.OpenFile (std::string (static_cast<char*> (f))) != PDFHummus::eSuccess) {
+  if (file.OpenFile (std::string (static_cast<char*> (f))) !=
+      PDFHummus::eSuccess) {
     convert_error << "pdf_hummus, failed to include PNG file " << image << LF;
     return false;
   }
@@ -342,8 +344,10 @@ pdf_image_rep::flush_for_pattern (PDFWriter& pdfw) {
   PDFStream* imageStream= objectsContext.StartPDFStream (imageContext, true);
   OutputStreamTraits   outputTraits (imageStream->GetWriteStream ());
   c_string             buf (data);
-  InputByteArrayStream reader (reinterpret_cast<IOBasicTypes::Byte*> (static_cast<char*> (buf)), N (data));
-  EStatusCode          status= outputTraits.CopyToOutputStream (&reader);
+  InputByteArrayStream reader (
+      reinterpret_cast<IOBasicTypes::Byte*> (static_cast<char*> (buf)),
+      N (data));
+  EStatusCode status= outputTraits.CopyToOutputStream (&reader);
   if (status != PDFHummus::eSuccess) {
     delete imageStream;
     return false;
@@ -368,8 +372,9 @@ pdf_image_rep::flush_for_pattern (PDFWriter& pdfw) {
   PDFStream* smaskStream= objectsContext.StartPDFStream (smaskContext, true);
   OutputStreamTraits   smaskOutputTraits (smaskStream->GetWriteStream ());
   c_string             buf_smask (smask);
-  InputByteArrayStream smaskReader (reinterpret_cast<IOBasicTypes::Byte*> (static_cast<char*> (buf_smask)),
-                                    N (smask));
+  InputByteArrayStream smaskReader (
+      reinterpret_cast<IOBasicTypes::Byte*> (static_cast<char*> (buf_smask)),
+      N (smask));
   status= smaskOutputTraits.CopyToOutputStream (&smaskReader);
   if (status != PDFHummus::eSuccess) {
     delete smaskStream;
