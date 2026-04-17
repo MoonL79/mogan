@@ -185,7 +185,7 @@ edit_interface_rep::math_complete_try (string comb) {
                      "(math-tabcycle-symbols ,\"" * comb * "\"))))) 0)";
     widget wid= as_widget (eval (wid_expr));
     cursor cu;
-    if ((last_cursor != nullptr) && (starts (prev_math_comb, comb))) {
+    if ((last_cursor != NULL) && (starts (prev_math_comb, comb))) {
       cu= last_cursor;
     }
     else {

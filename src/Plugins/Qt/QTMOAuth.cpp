@@ -369,11 +369,11 @@ QTMOAuth::loadExistingToken () {
 
   // 加载refresh_token
   c_string refreshTokenStr (as_string (call ("account-load-refresh-token")));
-  m_refreshToken= QString (static_cast<char*> (refreshTokenStr);
+  m_refreshToken= QString (static_cast<char*> (refreshTokenStr));
 
   // 加载token过期时间
   c_string expiryStr (as_string (call ("account-load-token-expiry")));
-  QString  expiryTimeStr= QString (static_cast<char*> (expiryStr);
+  QString  expiryTimeStr= QString (static_cast<char*> (expiryStr));
   if (!expiryTimeStr.isEmpty ()) {
     m_tokenExpiryTime= expiryTimeStr.toLongLong ();
   }
@@ -433,7 +433,7 @@ QTMOAuth::getAuthorizationUrl () {
   eval ("(use-modules (liii account))");
   c_string authorizationUrl (
       as_string (call ("account-oauth2-config", "authorization-url")));
-  return QUrl (static_cast<char*> (authorizationUrl);
+  return QUrl (static_cast<char*> (authorizationUrl));
 }
 
 QUrl
@@ -441,5 +441,5 @@ QTMOAuth::getAccessTokenUrl () {
   eval ("(use-modules (liii account))");
   c_string accessTokenUrl (
       as_string (call ("account-oauth2-config", "access-token-url")));
-  return QUrl (static_cast<char*> (accessTokenUrl);
+  return QUrl (static_cast<char*> (accessTokenUrl));
 }
