@@ -40,7 +40,7 @@ class player;
  * The cursor class
  ******************************************************************************/
 
-struct cursor_rep : concrete_struct {
+struct cursor_rep {
   SI     ox, oy; // main cursor position
   SI     delta;  // infinitesimal shift to the right
   SI     y1;     // under base line
@@ -50,11 +50,16 @@ struct cursor_rep : concrete_struct {
 };
 
 struct cursor {
-  CONCRETE (cursor);
+  std::shared_ptr<cursor_rep> rep;
+  
   cursor (SI x= 0, SI y= 0, SI delta= 0, SI y1= 0, SI y2= 0, double slope= 0.0,
           bool valid= true);
+  
+  inline cursor_rep* operator->() { return rep.get (); }
+  inline const cursor_rep* operator->() const { return rep.get (); }
+  inline cursor_rep& operator*() { return *rep; }
+  inline const cursor_rep& operator*() const { return *rep; }
 };
-CONCRETE_CODE (cursor);
 
 cursor      copy (cursor cu);
 bool        operator== (cursor cu1, cursor cu2);
@@ -65,7 +70,7 @@ tm_ostream& operator<< (tm_ostream& out, cursor cu);
  * The selection class
  ******************************************************************************/
 
-struct selection_rep : concrete_struct {
+struct selection_rep {
   rectangles rs;
   path       start;
   path       end;
@@ -73,11 +78,16 @@ struct selection_rep : concrete_struct {
 };
 
 struct selection {
-  CONCRETE (selection);
+  std::shared_ptr<selection_rep> rep;
+  
   selection (rectangles rs= rectangles (), path start= path (),
              path end= path (), bool valid= true);
+  
+  inline selection_rep* operator->() { return rep.get (); }
+  inline const selection_rep* operator->() const { return rep.get (); }
+  inline selection_rep& operator*() { return *rep; }
+  inline const selection_rep& operator*() const { return *rep; }
 };
-CONCRETE_CODE (selection);
 
 bool        operator== (selection sel1, selection sel2);
 bool        operator!= (selection sel1, selection sel2);
@@ -89,8 +99,14 @@ tm_ostream& operator<< (tm_ostream& out, selection sel);
 
 struct gr_selection_rep;
 struct gr_selection {
-  CONCRETE (gr_selection);
+  std::shared_ptr<gr_selection_rep> rep;
+  
   gr_selection (array<path> cp= array<path> (), SI dist= 0);
+  
+  inline gr_selection_rep* operator->() { return rep.get (); }
+  inline const gr_selection_rep* operator->() const { return rep.get (); }
+  inline gr_selection_rep& operator*() { return *rep; }
+  inline const gr_selection_rep& operator*() const { return *rep; }
 };
 
 tm_ostream& operator<< (tm_ostream& out, gr_selection sel);
@@ -108,16 +124,29 @@ struct lazy;
 typedef array<double> point;
 
 class box {
-  ABSTRACT_NULL (box);
+  std::shared_ptr<box_rep> rep;
+public:
+  box () = default;
+  box (box_rep* rep2);
+  
+  inline bool is_nil () const { return rep == nullptr; }
+  
   inline box operator[] (int i);
   box        operator[] (path p);
   operator tree ();
-  bool              operator== (box b2);
-  bool              operator!= (box b2);
+  bool              operator== (box b2) const;
+  bool              operator!= (box b2) const;
   friend inline int N (box b);
+  
+  inline box_rep* operator->() { return rep.get (); }
+  inline const box_rep* operator->() const { return rep.get (); }
+  inline box_rep& operator*() { return *rep; }
+  inline const box_rep& operator*() const { return *rep; }
 };
 
-class box_rep : public abstract_struct {
+inline bool is_nil (box b) { return b.is_nil(); }
+
+class box_rep {
 private:
   SI x0, y0; // offset w.r.t. parent box
 
@@ -273,7 +302,6 @@ public:
   friend void make_eps (url dest, box b, int dpi);
   friend void make_raster_image (url dest, box b, double zoom);
 };
-ABSTRACT_NULL_CODE (box);
 
 extern int box_count;
 inline box_rep::box_rep (path ip2)
@@ -417,7 +445,7 @@ tree attach_dip (tree ref, path ip);
  * The graphical selection class (continued)
  ******************************************************************************/
 
-struct gr_selection_rep : concrete_struct {
+struct gr_selection_rep {
   string       type;
   array<path>  cp;
   array<point> pts;
@@ -425,6 +453,5 @@ struct gr_selection_rep : concrete_struct {
   SI           dist;
   curve        c;
 };
-CONCRETE_CODE (gr_selection);
 
 #endif // defined BOXES_H

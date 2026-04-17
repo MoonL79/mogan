@@ -22,6 +22,8 @@
 
 extern tree the_et;
 
+box::box (box_rep* rep2) : rep (rep2) {}
+
 /******************************************************************************
  * Default settings for virtual routines
  ******************************************************************************/
@@ -37,7 +39,7 @@ box_rep::subbox (int i) {
 }
 box
 box::operator[] (path p) {
-  if (is_nil (p)) return *this;
+  if (::is_nil (p)) return *this;
   else return rep->subbox (p->item)[p->next];
 }
 double
@@ -734,7 +736,7 @@ box_rep::clear (renderer ren, SI x1, SI y1, SI x2, SI y2) {
  ******************************************************************************/
 
 cursor::cursor (SI x, SI y, SI delta, SI y1, SI y2, double slope, bool valid)
-    : rep (tm_new<cursor_rep> ()) {
+    : rep (std::make_shared<cursor_rep> ()) {
   rep->ox   = x;
   rep->oy   = y;
   rep->delta= delta;
@@ -777,7 +779,7 @@ operator<< (tm_ostream& out, cursor cu) {
  ******************************************************************************/
 
 selection::selection (rectangles rs, path start, path end, bool valid)
-    : rep (tm_new<selection_rep> ()) {
+    : rep (std::make_shared<selection_rep> ()) {
   rep->rs   = rs;
   rep->start= start;
   rep->end  = end;
@@ -804,7 +806,7 @@ operator<< (tm_ostream& out, selection sel) {
  ******************************************************************************/
 
 gr_selection::gr_selection (array<path> cp, SI dist)
-    : rep (tm_new<gr_selection_rep> ()) {
+    : rep (std::make_shared<gr_selection_rep> ()) {
   rep->cp  = cp;
   rep->dist= dist;
 }
@@ -978,11 +980,11 @@ box_rep::find_tag (string name) {
 }
 
 bool
-box::operator== (box b2) {
+box::operator== (box b2) const {
   return rep == b2.rep;
 }
 bool
-box::operator!= (box b2) {
+box::operator!= (box b2) const {
   return rep != b2.rep;
 }
 
