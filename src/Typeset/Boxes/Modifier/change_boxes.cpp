@@ -716,7 +716,7 @@ public:
 
 public:
   inline remember_box_rep (path ip, box b)
-      : change_box_rep (ip, true), changed_ptr (NULL) {
+      : change_box_rep (ip, true), changed_ptr (nullptr) {
     insert (b, 0, 0);
     position ();
     finalize ();

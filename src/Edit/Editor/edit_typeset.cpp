@@ -39,10 +39,10 @@ edit_typeset_rep::edit_typeset_rep ()
       the_style (TUPLE), cur (hashmap<string, tree> (UNINIT)), stydef (UNINIT),
       pre (UNINIT), init (UNINIT), fin (UNINIT), grefs (UNINIT),
       env (drd, buf->buf->master, buf->data->ref,
-           (buf->prj == NULL ? grefs : buf->prj->data->ref), buf->data->aux,
-           (buf->prj == NULL ? buf->data->aux : buf->prj->data->aux),
+           (buf->prj == nullptr ? grefs : buf->prj->data->ref), buf->data->aux,
+           (buf->prj == nullptr ? buf->data->aux : buf->prj->data->aux),
            buf->data->att,
-           (buf->prj == NULL ? buf->data->att : buf->prj->data->att)),
+           (buf->prj == nullptr ? buf->data->att : buf->prj->data->att)),
       ttt (new_typesetter (env, subtree (et, rp), reverse (rp))) {
   init_update ();
 }
@@ -158,7 +158,7 @@ concat_as_string (tree t) {
 array<string>
 edit_typeset_rep::find_refs (string val, bool global) {
   tree a= as_tree (buf->data->ref);
-  if (global && buf->prj != NULL) a= as_tree (buf->prj->data->ref);
+  if (global && buf->prj != nullptr) a= as_tree (buf->prj->data->ref);
   array<string> v;
   int           i, n= N (a);
   for (i= 0; i < n; i++)
@@ -171,7 +171,7 @@ edit_typeset_rep::find_refs (string val, bool global) {
 array<string>
 edit_typeset_rep::list_refs (bool global) {
   tree a= as_tree (buf->data->ref);
-  if (global && buf->prj != NULL) a= as_tree (buf->prj->data->ref);
+  if (global && buf->prj != nullptr) a= as_tree (buf->prj->data->ref);
   array<string> v;
   int           i, n= N (a);
   for (i= 0; i < n; i++)
@@ -198,7 +198,7 @@ edit_typeset_rep::reset_aux (string key) {
 array<string>
 edit_typeset_rep::list_auxs (bool global) {
   tree a= as_tree (buf->data->aux);
-  if (global && buf->prj != NULL) a= as_tree (buf->prj->data->aux);
+  if (global && buf->prj != nullptr) a= as_tree (buf->prj->data->aux);
   array<string> v;
   int           i, n= N (a);
   for (i= 0; i < n; i++)
@@ -225,7 +225,7 @@ edit_typeset_rep::reset_att (string key) {
 array<string>
 edit_typeset_rep::list_atts (bool global) {
   tree a= as_tree (buf->data->att);
-  if (global && buf->prj != NULL) a= as_tree (buf->prj->data->att);
+  if (global && buf->prj != nullptr) a= as_tree (buf->prj->data->att);
   array<string> v;
   int           i, n= N (a);
   for (i= 0; i < n; i++)
@@ -360,7 +360,7 @@ edit_typeset_rep::typeset_prepare () {
 
 void
 edit_typeset_rep::init_update () {
-  if (buf->prj != NULL) {
+  if (buf->prj != nullptr) {
     string id = as_string (delta (buf->prj->buf->name, buf->buf->name));
     string lab= "part:" * id;
     hashmap<string, tree> aux= env->global_aux;

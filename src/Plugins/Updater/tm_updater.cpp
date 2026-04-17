@@ -21,7 +21,7 @@
 
 tm_updater*
 tm_updater::instance () {
-  static tm_updater* _instance= NULL;
+  static tm_updater* _instance= nullptr;
 
   if (!_instance) {
 #if defined(OS_MACOS) && defined(USE_PLUGIN_SPARKLE)
@@ -33,7 +33,7 @@ tm_updater::instance () {
 #endif
   }
 
-  ASSERT (_instance != NULL, "Unable to instantiate updater.");
+  ASSERT (_instance != nullptr, "Unable to instantiate updater.");
   return _instance;
 }
 

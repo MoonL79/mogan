@@ -274,7 +274,7 @@ set_title_buffer (url name, string title) {
   array<url> vs  = buffer_to_views (name);
   for (int i= 0; i < N (vs); i++) {
     tm_window win= concrete_window (view_to_window (vs[i]));
-    if (win != NULL) {
+    if (win != nullptr) {
       win->set_window_name (title);
       win->set_window_url (name);
     }
@@ -589,7 +589,7 @@ export_tree (tree doc, url u, string fm) {
 bool
 buffer_export (url name, url dest, string fm) {
   tm_view vw= concrete_view (get_recent_view (name));
-  ASSERT (vw != NULL, "view expected");
+  ASSERT (vw != nullptr, "view expected");
   new_data export_data;
 
   vw->ed->get_data (vw->buf->data);

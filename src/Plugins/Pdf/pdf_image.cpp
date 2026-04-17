@@ -54,7 +54,7 @@ static void
 create_pdf_image_raw (PDFWriter& pdfw, string raw_data, SI width, SI height,
                       ObjectIDType imageXObjectID) {
 
-  PDFImageXObject* imageXObject= NULL;
+  PDFImageXObject* imageXObject= nullptr;
   // EStatusCode status = PDFHummus::eSuccess;
 
   ObjectsContext& objectsContext= pdfw.GetObjectsContext ();
@@ -91,7 +91,7 @@ create_pdf_image_raw (PDFWriter& pdfw, string raw_data, SI width, SI height,
       objectsContext.WriteKeyword ("stream");
       {
         c_string buf (raw_data);
-        objectsContext.StartFreeContext ()->Write ((unsigned char*) (char*) buf,
+        objectsContext.StartFreeContext ()->Write (reinterpret_cast<unsigned char*> (static_cast<char*> (buf)),
                                                    N (raw_data));
         objectsContext.EndFreeContext ();
       }
@@ -102,7 +102,7 @@ create_pdf_image_raw (PDFWriter& pdfw, string raw_data, SI width, SI height,
     imageXObject= new PDFImageXObject (imageXObjectID, KProcsetImageB);
   } while (false);
 
-  if (imageXObject == NULL)
+  if (imageXObject == nullptr)
     convert_error << "pdf_hummus, failed to include glyph" << LF;
   else delete imageXObject;
 }
@@ -139,8 +139,8 @@ pdf_image_rep::flush_jpg (PDFWriter& pdfw, url image) {
   c_string         f (concretize (image));
   DocumentContext& documentContext= pdfw.GetDocumentContext ();
   PDFImageXObject* imageXObject=
-      documentContext.CreateImageXObjectFromJPGFile ((char*) f);
-  if ((void*) imageXObject == NULL) {
+      documentContext.CreateImageXObjectFromJPGFile (static_cast<char*> (f));
+  if (imageXObject == nullptr) {
     convert_error << "pdf_hummus, failed to include JPG file " << image << LF;
     return false;
   }
@@ -166,7 +166,7 @@ pdf_image_rep::flush_png (PDFWriter& pdfw, url image) {
   c_string        f (concretize (image));
   PNGImageHandler pngHandler;
   InputFile       file;
-  if (file.OpenFile (std::string ((char*) f)) != PDFHummus::eSuccess) {
+  if (file.OpenFile (std::string (static_cast<char*> (f))) != PDFHummus::eSuccess) {
     convert_error << "pdf_hummus, failed to include PNG file " << image << LF;
     return false;
   }
@@ -176,7 +176,7 @@ pdf_image_rep::flush_png (PDFWriter& pdfw, url image) {
 
   stream->SetPosition (0);
   PDFFormXObject* formXObject= pdfw.CreateFormXObjectFromPNGStream (stream);
-  if ((void*) formXObject == NULL) {
+  if (formXObject == nullptr) {
     convert_error << "pdf_hummus, failed to create Form from PNG stream" << LF;
     return false;
   }
@@ -342,7 +342,7 @@ pdf_image_rep::flush_for_pattern (PDFWriter& pdfw) {
   PDFStream* imageStream= objectsContext.StartPDFStream (imageContext, true);
   OutputStreamTraits   outputTraits (imageStream->GetWriteStream ());
   c_string             buf (data);
-  InputByteArrayStream reader ((IOBasicTypes::Byte*) (char*) buf, N (data));
+  InputByteArrayStream reader (reinterpret_cast<IOBasicTypes::Byte*> (static_cast<char*> (buf)), N (data));
   EStatusCode          status= outputTraits.CopyToOutputStream (&reader);
   if (status != PDFHummus::eSuccess) {
     delete imageStream;
@@ -368,7 +368,7 @@ pdf_image_rep::flush_for_pattern (PDFWriter& pdfw) {
   PDFStream* smaskStream= objectsContext.StartPDFStream (smaskContext, true);
   OutputStreamTraits   smaskOutputTraits (smaskStream->GetWriteStream ());
   c_string             buf_smask (smask);
-  InputByteArrayStream smaskReader ((IOBasicTypes::Byte*) (char*) buf_smask,
+  InputByteArrayStream smaskReader (reinterpret_cast<IOBasicTypes::Byte*> (static_cast<char*> (buf_smask)),
                                     N (smask));
   status= smaskOutputTraits.CopyToOutputStream (&smaskReader);
   if (status != PDFHummus::eSuccess) {
@@ -397,7 +397,7 @@ hummus_pdf_image_size (url image, int& w, int& h) {
   PDFParser* parser= new PDFParser ();
   InputFile  pdfFile;
   c_string   f (as_string (resolved_image));
-  pdfFile.OpenFile ((char*) f);
+  pdfFile.OpenFile (static_cast<char*> (f));
   EStatusCode status= parser->StartPDFParsing (pdfFile.GetInputStream ());
   if (status != PDFHummus::eFailure) {
     PDFPageInput pageInput (parser, parser->ParsePage (0));

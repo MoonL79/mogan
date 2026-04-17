@@ -93,7 +93,7 @@ static metric error_metric;
 tt_font_metric_rep::tt_font_metric_rep (string name, string family,
                                         double size2, int hdpi2, int vdpi2)
     : font_metric_rep (name), size (size2), hdpi (hdpi2), vdpi (vdpi2),
-      fnm (NULL) {
+      fnm (nullptr) {
   face                = load_tt_face (family);
   bool size_set_failed= false;
   if (!face->bad_face) {

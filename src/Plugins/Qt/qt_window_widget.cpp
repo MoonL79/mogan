@@ -97,13 +97,13 @@ qt_window_widget_rep::popup_window_widget (string s) {
  */
 widget_rep*
 qt_window_widget_rep::widget_from_qwidget (QWidget* q) {
-  while (q != NULL) {
+  while (q != nullptr) {
     QVariant v= q->property ("texmacs_window_widget");
     if (v.canConvert<void*> ())
       return static_cast<widget_rep*> (v.value<void*> ());
     else q= q->parentWidget ();
   }
-  return NULL;
+  return nullptr;
 }
 
 /*! Returns true if any of the child QWidgets has different minimum and maximum

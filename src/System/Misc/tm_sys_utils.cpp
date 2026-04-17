@@ -216,7 +216,7 @@ open_url (url u) {
  * Error messages
  ******************************************************************************/
 
-static void (*the_wait_handler) (string, string, int)= NULL;
+static void (*the_wait_handler) (string, string, int)= nullptr;
 
 void
 set_wait_handler (void (*routine) (string, string, int)) {
@@ -225,7 +225,7 @@ set_wait_handler (void (*routine) (string, string, int)) {
 
 void
 system_wait (string message, string argument, int level) {
-  if (the_wait_handler == NULL) {
+  if (the_wait_handler == nullptr) {
     if (DEBUG_AUTO) {
       if (message == "") cout << "TeXmacs] Done" << LF;
       else {

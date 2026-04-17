@@ -95,7 +95,7 @@ Q_IMPORT_PLUGIN (QCocoaIntegrationPlugin)
 
 using namespace moebius;
 
-qt_gui_rep* the_gui   = NULL;
+qt_gui_rep* the_gui   = nullptr;
 int         nr_windows= 0; // FIXME: fake variable, referenced in tm_server
 
 /******************************************************************************
@@ -130,7 +130,7 @@ tm_sleep () {
  ******************************************************************************/
 
 qt_gui_rep::qt_gui_rep (int& argc, char** argv)
-    : interrupted (false), waitWindow (NULL), popup_wid_time (0),
+    : interrupted (false), waitWindow (nullptr), popup_wid_time (0),
       q_translator (0), time_credit (100), do_check_events (false),
       updating (false), needing_update (false) {
   (void) argc;
@@ -142,7 +142,7 @@ qt_gui_rep::qt_gui_rep (int& argc, char** argv)
   time_credit = 100;
   timeout_time= texmacs_time () + time_credit;
 
-  // waitDialog = NULL;
+  // waitDialog = nullptr;
 
   gui_helper= new QTMGuiHelper (this);
   qApp->installEventFilter (gui_helper);
@@ -548,7 +548,7 @@ qt_gui_rep::show_wait_indicator (widget w, string message, string arg) {
   need_update ();
 }
 
-void (*the_interpose_handler) (void)= NULL;
+void (*the_interpose_handler) (void)= nullptr;
 
 void
 gui_interpose (void (*r) (void)) {
@@ -605,9 +605,9 @@ gui_start_loop () {
 void
 gui_close () {
   // cleanly close the gui
-  ASSERT (the_gui != NULL, "gui not yet open");
+  ASSERT (the_gui != nullptr, "gui not yet open");
   tm_delete (the_gui);
-  the_gui= NULL;
+  the_gui= nullptr;
 
 #ifdef MACOSX_EXTENSIONS
   mac_end_remote ();
@@ -1025,7 +1025,7 @@ get_default_font (bool tt, bool mini, bool bold) {
   (void) mini;
   (void) bold;
   if (DEBUG_QT) debug_qt << "get_default_font(): SHOULD NOT BE CALLED\n";
-  return NULL; // return tex_font (this, "ecrm", 10, 300, 0);
+  return nullptr; // return tex_font (this, "ecrm", 10, 300, 0);
 }
 
 /*! Loads the metric and glyphs of a system font.

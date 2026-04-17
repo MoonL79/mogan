@@ -49,7 +49,7 @@ socket_link_rep::socket_link_rep (string host2, int port2, int type2, int fd)
   outbuf= "";
   alive = (fd != -1);
   if (type == SOCKET_SERVER) {
-    sn= socket_notifier (io, &socket_callback, this, NULL);
+    sn= socket_notifier (io, &socket_callback, this, nullptr);
     add_notifier (sn);
     call ("server-add", object (io));
   }
@@ -121,7 +121,7 @@ socket_link_rep::start () {
   /*
     c_string _host (host);
     struct hostent *hp = gethostbyname (_host);
-    if (hp == NULL) return "Error: no connection for '" * host * "'";
+    if (hp == nullptr) return "Error: no connection for '" * host * "'";
 
     // creating socket
     io= socket (AF_INET, SOCK_STREAM, 0);
@@ -153,15 +153,15 @@ socket_link_rep::start () {
   hints.ai_socktype = SOCK_STREAM; /* stream socket */
   hints.ai_flags    = AI_PASSIVE;  /* For wildcard IP address */
   hints.ai_protocol = 0;           /* Any protocol */
-  hints.ai_canonname= NULL;
-  hints.ai_addr     = NULL;
-  hints.ai_next     = NULL;
+  hints.ai_canonname= nullptr;
+  hints.ai_addr     = nullptr;
+  hints.ai_next     = nullptr;
 
   int x= getaddrinfo (_host, _port, &hints, &result);
   if (x != 0) return "Error: no address found for '" * host * "'";
   // getaddrinfo may return several addresses
   // trying them until we can connect
-  for (rp= result; rp != NULL; rp= rp->ai_next) {
+  for (rp= result; rp != nullptr; rp= rp->ai_next) {
     io= socket (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (io == -1) continue;
 
@@ -170,7 +170,7 @@ socket_link_rep::start () {
     close (io);
   }
 
-  if (rp == NULL) { /* No address succeeded */
+  if (rp == nullptr) { /* No address succeeded */
     return "Error: could not connect to '" * where * "'";
   }
 
@@ -187,7 +187,7 @@ socket_link_rep::start () {
     return "Error: non working connection to '" * where * "'";
 #endif
   alive= true;
-  sn   = socket_notifier (io, &socket_callback, this, NULL);
+  sn   = socket_notifier (io, &socket_callback, this, nullptr);
   add_notifier (sn);
   return "ok";
 }
@@ -291,7 +291,7 @@ socket_link_rep::listen (int msecs) {
   struct timeval tv;
   tv.tv_sec = msecs / 1000;
   tv.tv_usec= 1000 * (msecs % 1000);
-  int nr    = select (io + 1, &rfds, NULL, NULL, &tv);
+  int nr    = select (io + 1, &rfds, nullptr, nullptr, &tv);
   if (nr != 0 && FD_ISSET (io, &rfds)) feed (LINK_OUT);
 }
 
@@ -316,7 +316,7 @@ socket_link_rep::stop () {
   WSACleanup ();
 #else
   //  close (io);  //fix it?
-  wait (NULL);
+  wait (nullptr);
 #endif
 }
 
@@ -347,7 +347,7 @@ socket_callback (void* obj, void* info) {
     struct timeval tv;
     tv.tv_sec = 0;
     tv.tv_usec= 0;
-    select (max_fd, &rfds, NULL, NULL, &tv);
+    select (max_fd, &rfds, nullptr, nullptr, &tv);
 
     busy= false;
     if (con->alive && FD_ISSET (con->io, &rfds)) {

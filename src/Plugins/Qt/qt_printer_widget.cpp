@@ -19,7 +19,7 @@
 #include "qt_utilities.hpp" // check_type<T>
 #include "sys_utils.hpp"
 
-QTMPrinterSettings* qt_printer_widget_rep::_settings= NULL;
+QTMPrinterSettings* qt_printer_widget_rep::_settings= nullptr;
 
 /*!
  * @todo Load the default printer settings from somewhere.

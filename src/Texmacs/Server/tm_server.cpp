@@ -38,7 +38,7 @@
 #include <QStringList>
 #endif
 
-server* the_server     = NULL;
+server* the_server     = nullptr;
 bool    texmacs_started= false;
 bool    headless_mode  = false;
 url     tm_init_file   = url_none ();
@@ -90,20 +90,20 @@ void del_obj_qt_renderer (void);
 
 void
 texmacs_interpose_handler () {
-  if (the_server != NULL) (*the_server)->interpose_handler ();
+  if (the_server != nullptr) (*the_server)->interpose_handler ();
 }
 
 void
 texmacs_wait_handler (string message, string arg, int level) {
   (void) level;
-  if (texmacs_started && the_server != NULL)
+  if (texmacs_started && the_server != nullptr)
     (*the_server)->wait_handler (message, arg);
   else cout << "TeXmacs] Please wait: " << message << " " << arg << "\n";
 }
 
 bool
 is_server_started () {
-  return the_server != NULL;
+  return the_server != nullptr;
 }
 
 server
@@ -220,13 +220,13 @@ tm_server_rep::interpose_handler () {
 
       for (j= 0; j < N (buf->vws); j++) {
         tm_view vw= (tm_view) buf->vws[j];
-        if (vw->win != NULL) vw->ed->apply_changes ();
+        if (vw->win != nullptr) vw->ed->apply_changes ();
         vw->ed->set_user_active (false);
       }
 
       for (j= 0; j < N (buf->vws); j++) {
         tm_view vw= (tm_view) buf->vws[j];
-        if (vw->win != NULL) vw->ed->animate ();
+        if (vw->win != nullptr) vw->ed->animate ();
       }
     }
     windows_refresh ();

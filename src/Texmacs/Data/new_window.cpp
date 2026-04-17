@@ -59,7 +59,7 @@ destroy_window_id (url win) {
 
 url
 abstract_window (tm_window win) {
-  if (win == NULL || !is_valid_window (win)) return url_none ();
+  if (win == nullptr || !is_valid_window (win)) return url_none ();
   return win->id;
 }
 
@@ -67,7 +67,7 @@ abstract_window (tm_window win) {
  * Low level creation and destruction of windows
  ******************************************************************************/
 
-static hashmap<url, tm_window> tm_window_table (NULL);
+static hashmap<url, tm_window> tm_window_table (nullptr);
 static hashset<tm_window>      valid_windows;
 
 class kill_window_command_rep : public command_rep {
@@ -137,7 +137,7 @@ delete_window (url win_u) {
 
 bool
 is_valid_window (tm_window win) {
-  return win != NULL && valid_windows->contains (win);
+  return win != nullptr && valid_windows->contains (win);
 }
 
 tm_window
@@ -162,13 +162,13 @@ get_nr_windows () {
 bool
 has_current_window () {
   tm_view vw= concrete_view (get_current_view_safe ());
-  return vw != NULL && vw->win != NULL;
+  return vw != nullptr && vw->win != nullptr;
 }
 
 tm_window
 concrete_window () {
   tm_view vw= concrete_view (get_current_view ());
-  ASSERT (vw->win != NULL, "no window attached to view");
+  ASSERT (vw->win != nullptr, "no window attached to view");
   return vw->win;
 }
 
@@ -224,7 +224,7 @@ switch_to_window (url new_w) {
   url new_u= window_to_view (new_w);
   if (!is_none (old_u) && !is_none (new_u)) {
     tm_view old_vw= concrete_view (old_u);
-    if (old_vw != NULL) {
+    if (old_vw != nullptr) {
       // old_vw->ed->end_editing ();
       old_vw->ed->suspend ();
     }
@@ -234,8 +234,8 @@ switch_to_window (url new_w) {
     // attach_view (new_w, new_u);
     // set_current_view (new_u);
     tm_window win= concrete_window (new_w);
-    if (win != NULL) win->map ();
-    if (new_vw != NULL) {
+    if (win != nullptr) win->map ();
+    if (new_vw != nullptr) {
       // new_vw->ed->start_editing ();
       new_vw->ed->resume ();
       send_keyboard_focus (new_vw->ed);
@@ -246,7 +246,7 @@ switch_to_window (url new_w) {
 void
 switch_to_parent_window () {
   tm_window win= concrete_window ();
-  if (win == NULL) return;
+  if (win == nullptr) return;
   url parent= win->parent;
   if (parent == url_none ()) return;
   if (parent == get_current_window ()) return;

@@ -328,10 +328,10 @@ public:
     return headless_widget ();
   }
 
-  virtual QAction*         as_qaction () { return NULL; }
-  virtual QWidget*         as_qwidget () { return NULL; }
-  virtual QLayoutItem*     as_qlayoutitem () { return NULL; }
-  virtual QList<QAction*>* get_qactionlist () { return NULL; }
+  virtual QAction*         as_qaction () { return nullptr; }
+  virtual QWidget*         as_qwidget () { return nullptr; }
+  virtual QLayoutItem*     as_qlayoutitem () { return nullptr; }
+  virtual QList<QAction*>* get_qactionlist () { return nullptr; }
 
   virtual void     send (slot s, blackbox val) { qt_widget_rep::send (s, val); }
   virtual blackbox query (slot s, int type_id) {

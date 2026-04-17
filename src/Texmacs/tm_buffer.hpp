@@ -38,7 +38,7 @@ public:
   bool            notify; // notify modifications to scheme
 
   inline tm_buffer_rep (url name)
-      : buf (name), data (), vws (0), prj (NULL), rp (new_document ()),
+      : buf (name), data (), vws (0), prj (nullptr), rp (new_document ()),
         notify (false) {}
 
   inline ~tm_buffer_rep () { delete_document (rp); }
@@ -50,11 +50,11 @@ public:
 
 inline tm_buffer
 nil_buffer () {
-  return (tm_buffer) NULL;
+  return (tm_buffer) nullptr;
 }
 inline bool
 is_nil (tm_buffer buf) {
-  return buf == NULL;
+  return buf == nullptr;
 }
 
 #endif // defined TM_BUFFER_H

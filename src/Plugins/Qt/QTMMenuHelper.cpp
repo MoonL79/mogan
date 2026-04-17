@@ -350,7 +350,7 @@ QTMLazyMenu::attachTo (QAction* a) {
 
 void
 QTMLazyMenu::transferActions (QList<QAction*>* from) {
-  if (from == NULL) return;
+  if (from == nullptr) return;
   QList<QAction*> list= actions ();
   while (!list.isEmpty ()) {
     QAction* a= list.takeFirst ();
@@ -385,7 +385,7 @@ QTMInputTextWidgetHelper::QTMInputTextWidgetHelper (qt_widget _wid, bool _cac)
     : QObject (), p_wid (_wid), can_autocommit (_cac) {
   QTMLineEdit* le= qobject_cast<QTMLineEdit*> (wid ()->qwid);
   setParent (le);
-  ASSERT (le != NULL, "QTMInputTextWidgetHelper: expecting valid QTMLineEdit");
+  ASSERT (le != nullptr, "QTMInputTextWidgetHelper: expecting valid QTMLineEdit");
   QObject::connect (le, SIGNAL (returnPressed ()), this, SLOT (commit ()));
   QObject::connect (le, SIGNAL (focusOut (Qt::FocusReason)), this,
                     SLOT (leave (Qt::FocusReason)));
@@ -416,13 +416,13 @@ QTMInputTextWidgetHelper::leave (Qt::FocusReason reason) {
 
 QTMFieldWidgetHelper::QTMFieldWidgetHelper (qt_widget _wid, QComboBox* cb)
     : QObject (cb), wid (_wid), done (false) {
-  ASSERT (cb != NULL, "QTMFieldWidgetHelper: expecting valid QComboBox");
+  ASSERT (cb != nullptr, "QTMFieldWidgetHelper: expecting valid QComboBox");
   QObject::connect (cb, SIGNAL (editTextChanged (const QString&)), this,
                     SLOT (commit (const QString&)));
 }
 QTMFieldWidgetHelper::QTMFieldWidgetHelper (qt_widget _wid, QLineEdit* cb)
     : QObject (cb), wid (_wid), done (false) {
-  ASSERT (cb != NULL, "QTMFieldWidgetHelper: expecting valid QLineEdit");
+  ASSERT (cb != nullptr, "QTMFieldWidgetHelper: expecting valid QLineEdit");
   QObject::connect (cb, SIGNAL (textChanged (const QString&)), this,
                     SLOT (commit (const QString&)));
 }
@@ -818,7 +818,7 @@ extern bool menu_caching;
 QTMRefreshWidget::QTMRefreshWidget (qt_widget _tmwid, string _strwid,
                                     string _kind)
     : QWidget (), strwid (_strwid), kind (_kind), curobj (false), cur (),
-      tmwid (_tmwid), qwid (NULL), cache (widget ()) {
+      tmwid (_tmwid), qwid (nullptr), cache (widget ()) {
   QObject::connect (the_gui->gui_helper, SIGNAL (tmSlotRefresh (string)), this,
                     SLOT (doRefresh (string)));
   QVBoxLayout* l= new QVBoxLayout (this);
@@ -865,11 +865,11 @@ QTMRefreshWidget::deleteLayout (QLayout* l) {
     if (item->widget()) {
         //qDebug() << "Deleting widget: " << item->widget();
       l->removeWidget (item->widget());
-      item->widget()->setParent (NULL);
+      item->widget()->setParent (nullptr);
       delete item->widget();
     }	else if (item->layout()) {
         //qDebug() << "Deleting layout: " << item->layout();
-      item->layout()->setParent (NULL);
+      item->layout()->setParent (nullptr);
       deleteLayout (item->layout());
     }
   }
@@ -882,7 +882,7 @@ void
 QTMRefreshWidget::doRefresh (string kind) {
   BEGIN_SLOT
   if (recompute (kind)) {
-    if (qwid) qwid->setParent (NULL);
+    if (qwid) qwid->setParent (nullptr);
     delete qwid;
     qwid= concrete (cur)->as_qwidget ();
     qwid->setParent (this);
@@ -908,7 +908,7 @@ QTMRefreshWidget::doRefresh (string kind) {
 QTMRefreshableWidget::QTMRefreshableWidget (qt_widget _tmwid, object _prom,
                                             string _kind)
     : QWidget (), prom (_prom), kind (_kind), curobj (false), cur (),
-      tmwid (_tmwid), qwid (NULL) {
+      tmwid (_tmwid), qwid (nullptr) {
   QObject::connect (the_gui->gui_helper, SIGNAL (tmSlotRefresh (string)), this,
                     SLOT (doRefresh (string)));
   QVBoxLayout* l= new QVBoxLayout (this);
@@ -945,11 +945,11 @@ QTMRefreshableWidget::deleteLayout (QLayout* l) {
     if (item->widget()) {
         //qDebug() << "Deleting widget: " << item->widget();
       l->removeWidget (item->widget());
-      item->widget()->setParent (NULL);
+      item->widget()->setParent (nullptr);
       delete item->widget();
     }	else if (item->layout()) {
         //qDebug() << "Deleting layout: " << item->layout();
-      item->layout()->setParent (NULL);
+      item->layout()->setParent (nullptr);
       deleteLayout (item->layout());
     }
   }
@@ -962,7 +962,7 @@ void
 QTMRefreshableWidget::doRefresh (string kind) {
   BEGIN_SLOT
   if (recompute (kind)) {
-    if (qwid) qwid->setParent (NULL);
+    if (qwid) qwid->setParent (nullptr);
     delete qwid;
     qwid= concrete (cur)->as_qwidget ();
     qwid->setParent (this);
@@ -1029,9 +1029,9 @@ QTMComboBox::addItemsAndResize (const QStringList& texts, string ww,
     calcSize.setHeight (qMax (calcSize.height (), br.height ()));
   }
   calcSize= qt_decode_length (ww, hh, calcSize, fm);
-  // if (ends (ww, "em") && (parent () == NULL))
+  // if (ends (ww, "em") && (parent () == nullptr))
   //   calcSize.rwidth ()= (int) floor (retina_scale * calcSize.width () + 0.5);
-  // if (ends (hh, "em") && (parent () == NULL))
+  // if (ends (hh, "em") && (parent () == nullptr))
   //   calcSize.rheight()= (int) floor (retina_scale * calcSize.height() + 0.5);
 
   ///// Add minimum constraints and fix size

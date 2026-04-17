@@ -142,7 +142,7 @@ perlin_rep::noise2 (int nColorChannel, double vec[2], StitchInfo* pStitchInfo) {
   ry0= t - (int) t;
   ry1= ry0 - 1.0f;
   // If stitching, adjust lattice points accordingly.
-  if (pStitchInfo != NULL) {
+  if (pStitchInfo != nullptr) {
     if (bx0 >= pStitchInfo->nWrapX) bx0-= pStitchInfo->nWidth;
     if (bx1 >= pStitchInfo->nWrapX) bx1-= pStitchInfo->nWidth;
     if (by0 >= pStitchInfo->nWrapY) by0-= pStitchInfo->nHeight;
@@ -179,7 +179,7 @@ perlin_rep::turbulence (int nColorChannel, double pointX, double pointY,
                         bool bFractalSum, bool bDoStitching, double fTileX,
                         double fTileY, double fTileWidth, double fTileHeight) {
   StitchInfo  stitch;
-  StitchInfo* pStitchInfo= NULL; // Not stitching when NULL.
+  StitchInfo* pStitchInfo= nullptr; // Not stitching when nullptr.
   // Adjust the base frequencies if necessary for stitching.
   if (bDoStitching) {
     // When stitching tiled turbulence, the frequencies must be adjusted
@@ -216,7 +216,7 @@ perlin_rep::turbulence (int nColorChannel, double pointX, double pointY,
     vec[0]*= 2;
     vec[1]*= 2;
     ratio*= 2;
-    if (pStitchInfo != NULL) {
+    if (pStitchInfo != nullptr) {
       // Update stitch values. Subtracting PerlinN before the multiplication and
       // adding it afterward simplifies to subtracting it once.
       stitch.nWidth*= 2;

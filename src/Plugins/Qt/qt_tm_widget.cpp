@@ -88,7 +88,7 @@ replaceActions (QWidget* dest, QList<QAction*>* src) {
   // NOTE: the parent hierarchy of the actions is not modified while installing
   //       the menu in the GUI (see qt_menu.hpp for this memory management
   //       policy)
-  if (src == NULL || dest == NULL)
+  if (src == nullptr || dest == nullptr)
     TM_FAILED ("replaceActions expects valid objects");
   dest->setUpdatesEnabled (false);
   QList<QAction*> list= dest->actions ();
@@ -105,7 +105,7 @@ replaceActions (QWidget* dest, QList<QAction*>* src) {
 
 static void
 replaceButtons (QToolBar* dest, QList<QAction*>* src) {
-  if (src == NULL || dest == NULL)
+  if (src == nullptr || dest == nullptr)
     TM_FAILED ("replaceButtons expects valid objects");
   dest->setUpdatesEnabled (false);
   bool visible= dest->isVisible ();
@@ -142,7 +142,7 @@ QTMInteractiveInputHelper::commit (int result) {
 
 qt_tm_widget_rep::qt_tm_widget_rep (int mask, command _quit)
     : qt_window_widget_rep (new QTMWindow (0), "popup", _quit), helper (this),
-      prompt (NULL), full_screen (false), menuToolBarVisibleCache (false),
+      prompt (nullptr), full_screen (false), menuToolBarVisibleCache (false),
       titleBarVisibleCache (false), membershipTitleLabel (nullptr),
       m_userId (""), startupContentWidget (nullptr), startupTabMode (false) {
   type= texmacs_widget;
@@ -598,7 +598,7 @@ qt_tm_widget_rep::qt_tm_widget_rep (int mask, command _quit)
     // the dumb toolbar.
 
     mainToolBarAction= dumbToolBar->addWidget (mainToolBar);
-    modeToolBarAction= NULL;
+    modeToolBarAction= nullptr;
 
     // A ruler
     rulerWidget= new QWidget (cw);
@@ -1020,7 +1020,7 @@ qt_tm_widget_rep::update_visibility () {
         bl->removeWidget (rulerWidget);
         rulerWidget->setVisible (false);
         bl->removeWidget (modeToolBar);
-        if (modeToolBarAction == NULL) {
+        if (modeToolBarAction == nullptr) {
           modeToolBarAction= dumbToolBar->addWidget (modeToolBar);
         }
         else {
@@ -1196,7 +1196,7 @@ qt_tm_widget_rep::send (slot s, blackbox val) {
       middleLabel->show ();
       rightLabel->show ();
       prompt->deleteLater ();
-      prompt= NULL;
+      prompt= nullptr;
     }
   } break;
   case SLOT_FILE: {

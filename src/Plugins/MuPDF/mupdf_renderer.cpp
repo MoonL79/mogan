@@ -30,9 +30,9 @@
 // manage a single global context for fitz
 fz_context*
 mupdf_context () {
-  static fz_context* ctx= NULL;
+  static fz_context* ctx= nullptr;
   if (!ctx) {
-    ctx= fz_new_context (NULL, NULL, FZ_STORE_UNLIMITED);
+    ctx= fz_new_context (nullptr, nullptr, FZ_STORE_UNLIMITED);
     if (DEBUG_STD) {
       debug_std << "Use MuPDF render(" << FZ_VERSION << ")\n";
     }
@@ -43,7 +43,7 @@ mupdf_context () {
 // global auxiliary document needed to invoke some functions
 pdf_document*
 mupdf_document () {
-  static pdf_document* doc= NULL;
+  static pdf_document* doc= nullptr;
   if (!doc) {
     doc= pdf_create_document (mupdf_context ());
   }
@@ -88,7 +88,7 @@ struct mupdf_image_rep : concrete_struct {
     fz_keep_image (mupdf_context (), img);
     // get pixmap size
     fz_pixmap* pix=
-        fz_get_pixmap_from_image (mupdf_context (), img, NULL, NULL, &w, &h);
+        fz_get_pixmap_from_image (mupdf_context (), img, nullptr, nullptr, &w, &h);
     fz_drop_pixmap (mupdf_context (), pix);
     xo= yo= 0;
   }
@@ -173,7 +173,7 @@ del_obj_mupdf_renderer (void) {
  ******************************************************************************/
 
 mupdf_renderer_rep::mupdf_renderer_rep (int w2, int h2)
-    : basic_renderer_rep (true, w2, h2), pixmap (NULL), dev (NULL), proc (NULL),
+    : basic_renderer_rep (true, w2, h2), pixmap (nullptr), dev (nullptr), proc (nullptr),
       fg (-1), bg (-1), lw (-1), in_text (false), cfn ("") {
   reset_zoom_factor ();
 }
@@ -216,7 +216,7 @@ mupdf_renderer_rep::begin (void* handle) {
     dev          = fz_new_draw_device (ctx, fz_identity, pixmap);
     fz_matrix ctm= fz_make_matrix (1, 0, 0, -1, 0, 0);
     proc= pdf_new_run_processor (ctx, mupdf_document (), dev, ctm, -1, "View",
-                                 NULL, NULL, NULL);
+                                 nullptr, nullptr, nullptr);
 
     fg              = -1;
     bg              = -1;
@@ -250,23 +250,23 @@ mupdf_renderer_rep::end () {
     if (clip_active) {
       clip_proc->op_Q (mupdf_context (), clip_proc);
       clip_active= false;
-      clip_proc  = NULL;
+      clip_proc  = nullptr;
     }
     // outmost restore for the graphics state (see begin_page)
     proc->op_Q (mupdf_context (), proc);
 
     pdf_close_processor (mupdf_context (), proc);
     pdf_drop_processor (mupdf_context (), proc);
-    proc= NULL;
+    proc= nullptr;
   }
   if (dev) {
     fz_close_device (mupdf_context (), dev);
     fz_drop_device (mupdf_context (), dev);
-    dev= NULL;
+    dev= nullptr;
   }
   if (pixmap) {
     fz_drop_pixmap (mupdf_context (), pixmap);
-    pixmap= NULL;
+    pixmap= nullptr;
   }
 }
 
@@ -362,7 +362,7 @@ mupdf_renderer_rep::set_clipping (SI x1, SI y1, SI x2, SI y2, bool restore) {
   if (transform_active) return;
 
   if (clip_proc != proc) {
-    if (clip_proc != NULL) clip_proc->op_Q (mupdf_context (), clip_proc);
+    if (clip_proc != nullptr) clip_proc->op_Q (mupdf_context (), clip_proc);
     clip_proc  = proc;
     clip_active= false;
   }
@@ -432,7 +432,7 @@ get_image (url u, int w, int h, tree eff, SI pixel) {
   mupdf_image mpim= mupdf_image ();
   fz_pixmap*  pix = mupdf_load_pixmap (u, w, h, eff, pixel);
   if (pix) {
-    fz_image* im= fz_new_image_from_pixmap (mupdf_context (), pix, NULL);
+    fz_image* im= fz_new_image_from_pixmap (mupdf_context (), pix, nullptr);
     fz_drop_pixmap (mupdf_context (), pix);
     mpim= mupdf_image (im);
   }
@@ -494,12 +494,12 @@ mupdf_renderer_rep::register_pattern (brush br, SI pixel) {
     pdf_processor* pout= pdf_new_buffer_processor (ctx, buf, 0, 0);
     pout->op_q (ctx, pout);
     pout->op_cm (ctx, pout, w, 0, 0, h, 0, 0);
-    pout->op_Do_image (ctx, pout, "pattern-image", NULL);
+    pout->op_Do_image (ctx, pout, "pattern-image", nullptr);
     pout->op_Q (ctx, pout);
     pdf_close_processor (ctx, pout);
   }
   pdf_obj* contents=
-      pdf_add_stream (ctx, doc, buf, NULL /* dict */, 0 /* compress */);
+      pdf_add_stream (ctx, doc, buf, nullptr /* dict */, 0 /* compress */);
   fz_drop_buffer (ctx, buf);
   {
     // make a pdf_pattern
@@ -555,7 +555,7 @@ mupdf_renderer_rep::select_stroke_pattern (brush br) {
   proc->op_CS (mupdf_context (), proc, "Pattern",
                fz_device_rgb (mupdf_context ()));
   proc->op_SC_pattern (mupdf_context (), proc, "*stroke-pattern*", p->pat, 0,
-                       NULL);
+                       nullptr);
 }
 
 void
@@ -572,7 +572,7 @@ mupdf_renderer_rep::select_fill_pattern (brush br) {
   proc->op_CS (mupdf_context (), proc, "Pattern",
                fz_device_rgb (mupdf_context ()));
   proc->op_sc_pattern (mupdf_context (), proc, "*fill-pattern*", p->pat, 0,
-                       NULL);
+                       nullptr);
   select_alpha ((1000 * br->get_alpha ()) / 255);
 }
 
@@ -835,7 +835,7 @@ set_default_gstate (fz_context* ctx, pdf_processor* proc) {
   //  buf << "/BM /Normal\r\n";
   proc->op_gs_BM (ctx, proc, "Normal");
   //  buf << "/SMask /None\r\n";
-  proc->op_gs_SMask (ctx, proc, NULL, NULL, NULL, 0, NULL);
+  proc->op_gs_SMask (ctx, proc, nullptr, nullptr, nullptr, 0, nullptr);
   //  buf << "/CA 1.0\r\n";
   proc->op_gs_CA (ctx, proc, 1.0);
   //  buf << "/ca 1.0\r\n";
@@ -871,7 +871,7 @@ mupdf_renderer_rep::draw_picture (picture p, SI x, SI y, int alpha) {
   if (!pict->im) {
     // let's cache the image representation of the pixmap
     // it will be dropped by the object
-    pict->im= fz_new_image_from_pixmap (mupdf_context (), pict->pix, NULL);
+    pict->im= fz_new_image_from_pixmap (mupdf_context (), pict->pix, nullptr);
   }
   int w= p->get_width (), h= p->get_height ();
   int ox= p->get_origin_x (), oy= p->get_origin_y ();
@@ -897,7 +897,7 @@ mupdf_renderer_rep::draw_scalable (scalable im, SI x, SI y, int alpha) {
     if (image_pool->contains (lookup)) im2= image_pool[lookup];
     else {
       fz_image* fzim= mupdf_load_image (u);
-      if (fzim != NULL) {
+      if (fzim != nullptr) {
         im2= mupdf_image (fzim);
         fz_drop_image (ctx, fzim);
       }
@@ -961,7 +961,7 @@ mupdf_renderer_rep::draw_bis (int c, font_glyphs fng, SI x, SI y) {
     int pattern_alpha= br->get_alpha ();
     QPainter glim (im);
     glim.setOpacity (qreal (pattern_alpha) / qreal (255));
-    if (pm != NULL) {
+    if (pm != nullptr) {
       SI tx= x- xo*std_shrinkf, ty= y+ yo*std_shrinkf;
       decode (tx, ty); ty--;
       QBrush qbr (*pm);
@@ -999,12 +999,12 @@ load_pdf_font (string fontname) {
   int               face_index   = f_pair.x2;
   url               u            = tt_font_find (font_basename);
   if (!is_none (u)) {
-    pdf_font_desc* fontdesc= NULL;
+    pdf_font_desc* fontdesc= nullptr;
     {
       // debug_convert << "fz_new_font_from_file "  << u  << LF;
       c_string path (concretize (u));
       fz_font* font=
-          fz_new_font_from_file (mupdf_context (), NULL, path, face_index, 0);
+          fz_new_font_from_file (mupdf_context (), nullptr, path, face_index, 0);
       if (font) {
         fontdesc      = pdf_new_font_desc (mupdf_context ());
         fontdesc->font= font;
@@ -1017,7 +1017,7 @@ load_pdf_font (string fontname) {
         ft_select_charmap (face, ft_encoding_adobe_custom);
       }
     }
-    if (fontdesc != NULL) {
+    if (fontdesc != nullptr) {
       return fontdesc;
     }
     else {
@@ -1026,7 +1026,7 @@ load_pdf_font (string fontname) {
                       << "Will be rendered as pixmaps" << LF;
     }
   }
-  return NULL;
+  return nullptr;
 }
 
 static float
@@ -1061,7 +1061,7 @@ mupdf_renderer_rep::draw (int c, font_glyphs fng, SI x, SI y) {
   }
 
   string         fontname= fng->res_name;
-  pdf_font_desc* fontdesc= NULL;
+  pdf_font_desc* fontdesc= nullptr;
 
   begin_text ();
 
@@ -1076,7 +1076,7 @@ mupdf_renderer_rep::draw (int c, font_glyphs fng, SI x, SI y) {
         pdf_drop_font (mupdf_context (), fontdesc);
       }
       else {
-        native_fonts (fontname)= mupdf_font (NULL);
+        native_fonts (fontname)= mupdf_font (nullptr);
         // this means use bitmap glyphs
       }
     }
@@ -1161,8 +1161,8 @@ mupdf_renderer_rep::draw (int c, font_glyphs fng, SI x, SI y) {
     }
     fz_pixmap* pix= fz_new_pixmap_with_data (mupdf_context (),
                                              fz_device_rgb (mupdf_context ()),
-                                             w, h, NULL, 1, w * 4, samples);
-    fz_image*  im = fz_new_image_from_pixmap (mupdf_context (), pix, NULL);
+                                             w, h, nullptr, 1, w * 4, samples);
+    fz_image*  im = fz_new_image_from_pixmap (mupdf_context (), pix, nullptr);
     mi            = mupdf_image (im);
     mi->xo        = xo;
     mi->yo        = yo;
@@ -1182,7 +1182,7 @@ mupdf_renderer_rep::draw (int c, font_glyphs fng, SI x, SI y) {
 
 mupdf_renderer_rep*
 the_mupdf_renderer () {
-  static mupdf_renderer_rep* the_renderer= NULL;
+  static mupdf_renderer_rep* the_renderer= nullptr;
   if (!the_renderer) {
     the_renderer= tm_new<mupdf_renderer_rep> ();
   }
@@ -1240,7 +1240,7 @@ translate_pixmap (fz_pixmap* dest_pix, fz_irect dest_rect, fz_pixmap* src_pix,
 void
 mupdf_renderer_rep::fetch (SI x1, SI y1, SI x2, SI y2, renderer ren, SI x,
                            SI y) {
-  ASSERT (ren != NULL, "invalid situation");
+  ASSERT (ren != nullptr, "invalid situation");
   if (ren->is_printer ()) return;
   mupdf_renderer_rep* src= (mupdf_renderer_rep*) ren->get_handle ();
   if (src->pixmap == pixmap && x1 == x && y1 == y) return;
@@ -1271,17 +1271,17 @@ void
 mupdf_renderer_rep::new_shadow (renderer& ren) {
   SI mw, mh, sw, sh;
   get_extents (mw, mh);
-  if (ren != NULL) {
+  if (ren != nullptr) {
     ren->get_extents (sw, sh);
     if (sw != mw || sh != mh) {
       delete_shadow (ren);
-      ren= NULL;
+      ren= nullptr;
     }
   }
-  if (ren == NULL) {
+  if (ren == nullptr) {
     ren           = (renderer) tm_new<mupdf_renderer_rep> (mw, mh);
     fz_pixmap* pix= fz_new_pixmap (
-        mupdf_context (), fz_device_rgb (mupdf_context ()), mw, mh, NULL, 1);
+        mupdf_context (), fz_device_rgb (mupdf_context ()), mw, mh, nullptr, 1);
     static_cast<mupdf_renderer_rep*> (ren)->begin (pix);
     fz_drop_pixmap (mupdf_context (), pix);
   }
@@ -1289,10 +1289,10 @@ mupdf_renderer_rep::new_shadow (renderer& ren) {
 
 void
 mupdf_renderer_rep::delete_shadow (renderer& ren) {
-  if (ren != NULL) {
+  if (ren != nullptr) {
     static_cast<mupdf_renderer_rep*> (ren)->end ();
     tm_delete (ren);
-    ren= NULL;
+    ren= nullptr;
   }
 }
 
@@ -1305,7 +1305,7 @@ void fz_copy_pixmap_rect (fz_context* ctx, fz_pixmap* dest, fz_pixmap* src,
 void
 mupdf_renderer_rep::get_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   // FIXME: we should use the routine fetch later
-  ASSERT (ren != NULL, "invalid renderer");
+  ASSERT (ren != nullptr, "invalid renderer");
   if (ren->is_printer ()) return;
   mupdf_renderer_rep* shadow= static_cast<mupdf_renderer_rep*> (ren);
   outer_round (x1, y1, x2, y2);
@@ -1325,14 +1325,14 @@ mupdf_renderer_rep::get_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   decode (x2, y2);
   if (x1 < x2 && y2 < y1) {
     fz_irect rect= fz_make_irect (x1, y2, x2, y1);
-    fz_copy_pixmap_rect (mupdf_context (), shadow->pixmap, pixmap, rect, NULL);
+    fz_copy_pixmap_rect (mupdf_context (), shadow->pixmap, pixmap, rect, nullptr);
   }
 }
 
 void
 mupdf_renderer_rep::put_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   // FIXME: we should use the routine fetch later
-  ASSERT (ren != NULL, "invalid renderer");
+  ASSERT (ren != nullptr, "invalid renderer");
   if (ren->is_printer ()) return;
   mupdf_renderer_rep* shadow= static_cast<mupdf_renderer_rep*> (ren);
   outer_round (x1, y1, x2, y2);
@@ -1344,13 +1344,13 @@ mupdf_renderer_rep::put_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   decode (x2, y2);
   if (x1 < x2 && y2 < y1) {
     fz_irect rect= fz_make_irect (x1, y2, x2, y1);
-    fz_copy_pixmap_rect (mupdf_context (), pixmap, shadow->pixmap, rect, NULL);
+    fz_copy_pixmap_rect (mupdf_context (), pixmap, shadow->pixmap, rect, nullptr);
   }
 }
 
 void
 mupdf_renderer_rep::apply_shadow (SI x1, SI y1, SI x2, SI y2) {
-  if (master == NULL) return;
+  if (master == nullptr) return;
   if (pixmap == static_cast<mupdf_renderer_rep*> (master)->pixmap) return;
   outer_round (x1, y1, x2, y2);
   decode (x1, y1);
@@ -1395,13 +1395,13 @@ get_QTMPixmapOrImage_from_pixmap (fz_pixmap* pix) {
 fz_buffer*
 mupdf_read_from_url (url u) {
   fz_context* ctx= mupdf_context ();
-  fz_buffer*  buf= NULL;
+  fz_buffer*  buf= nullptr;
   fz_try (ctx) {
     if (is_ramdisc (u)) {
       // 在访问树节点子元素前进行边界检查
       // ramdisc URL 结构：concat(root("ramdisc", data), filename)
       if (N (u->t) < 2 || N (u[1]->t) < 3) {
-        buf= NULL;
+        buf= nullptr;
       }
       else {
         string image_data= as_string (u[1][2]);

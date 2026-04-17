@@ -35,7 +35,7 @@ public:
       n--;
   }
   inline ~polynomial_rep () {
-    if (a != NULL) tm_delete_array (a);
+    if (a != nullptr) tm_delete_array (a);
   }
   friend class polynomial<T>;
   friend int N LESSGTR (polynomial<T> a);
@@ -46,12 +46,12 @@ TMPL class polynomial {
   CONCRETE_TEMPLATE (polynomial, T);
   inline polynomial (T* a, int n) : rep (tm_new<polynomial_rep<T>> (a, n)) {}
   inline polynomial (T c, int n) {
-    T* a= (n == 0 ? NULL : tm_new_array<T> (n));
+    T* a= (n == 0 ? nullptr : tm_new_array<T> (n));
     for (int i= 0; i < n; i++)
       a[i]= c;
     rep= tm_new<polynomial_rep<T>> (a, n);
   }
-  inline polynomial () { rep= tm_new<polynomial_rep<T>> ((T*) NULL, 0); }
+  inline polynomial () { rep= tm_new<polynomial_rep<T>> ((T*) nullptr, 0); }
   inline polynomial (T c1) {
     T* a= tm_new_array<T> (1);
     a[0]= c1;

@@ -147,7 +147,7 @@ pdf_hummus_make_attachments (url pdf_path, array<url> attachment_paths,
 }
 
 PDFAttachment::PDFAttachment (void) {
-  file_content= NULL;
+  file_content= nullptr;
   lenth       = 0;
 }
 
@@ -229,7 +229,7 @@ PDFAttachmentWriter::OnCatalogWrite (
 
   iterator<PDFAttachment*> it_0          = iterate (mAttachment);
   ObjectIDType             the_main_tm_id= 999999999;
-  PDFAttachment*           the_main_tm   = NULL;
+  PDFAttachment*           the_main_tm   = nullptr;
   while (it_0->busy ()) {
     PDFAttachment* cur_attachment= it_0->next ();
     if (the_main_tm_id > mAttachment (cur_attachment)) {
@@ -237,7 +237,7 @@ PDFAttachmentWriter::OnCatalogWrite (
       the_main_tm_id= mAttachment (cur_attachment);
     }
   }
-  if (the_main_tm != NULL) {
+  if (the_main_tm != nullptr) {
     inPDFWriterObjectContext->WriteLiteralString (as_charp (the_main_tm->name));
     DictionaryContext* dictionaryContext_2=
         inPDFWriterObjectContext->StartDictionary ();

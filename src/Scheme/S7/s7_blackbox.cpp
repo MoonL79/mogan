@@ -55,12 +55,12 @@ free_blackbox (s7_scheme* sc, s7_pointer obj) {
   tm_delete (ptr);
 
   // Don't remove this, segmentation error could happen :)
-  return (NULL);
+  return (nullptr);
 }
 
 static s7_pointer
 mark_blackbox (s7_scheme* sc, s7_pointer obj) {
-  return (NULL);
+  return (nullptr);
 }
 
 void

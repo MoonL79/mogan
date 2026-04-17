@@ -32,7 +32,7 @@ widget make_menu_widget (object menu, int w, int h);
 void   refresh_size (widget wid, bool exact);
 
 static int                  last_window_handle= 0;
-static hashmap<int, widget> window_table (NULL);
+static hashmap<int, widget> window_table (nullptr);
 static hashmap<tree, path>  window_by_name;
 static time_t               refresh_time= 0;
 
@@ -142,7 +142,7 @@ tm_window_rep::tm_window_rep (widget wid2, tree geom)
     : win (texmacs_window_widget (wid2, geom)), wid (wid2),
       parent (url_none ()), id (create_window_id ()),
       serial (tm_window_serial++), menu_current (object ()),
-      menu_cache (widget ()), text_ptr (NULL) {
+      menu_cache (widget ()), text_ptr (nullptr) {
   zoomf= retina_zoom * get_server ()->get_default_zoom_factor ();
 }
 
@@ -160,7 +160,7 @@ get_doc_zoom_factor (tree doc) {
 tm_window_rep::tm_window_rep (tree doc, command quit, url parent_window)
     : win (texmacs_widget (0, quit)), wid (win), id (url_none ()),
       parent (parent_window), serial (tm_window_serial++),
-      menu_current (object ()), menu_cache (widget ()), text_ptr (NULL) {
+      menu_current (object ()), menu_cache (widget ()), text_ptr (nullptr) {
   zoomf= retina_zoom * get_doc_zoom_factor (doc);
   if (zoomf < 0.0)
     zoomf= retina_zoom * get_server ()->get_default_zoom_factor ();
@@ -405,7 +405,7 @@ tm_window_rep::get_menu_widget (int which, string menu, widget& w) {
   drd_info old_drd= the_drd;
   if (!is_none (window_to_view (id))) {
     tm_view vw= concrete_view (window_to_view (id));
-    if (vw != NULL) the_drd= vw->ed->drd;
+    if (vw != nullptr) the_drd= vw->ed->drd;
   }
   object xmenu= call ("menu-expand", eval ("'" * menu));
   the_drd     = old_drd;
@@ -671,9 +671,9 @@ tm_window_rep::interactive (string name, string type, array<string> def,
 
 void
 tm_window_rep::interactive_return () {
-  if (text_ptr == NULL) return;
+  if (text_ptr == nullptr) return;
   *text_ptr= get_interactive_input (wid);
-  text_ptr = NULL;
+  text_ptr = nullptr;
   set_interactive_mode (false);
   call_back ();
 }

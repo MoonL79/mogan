@@ -70,18 +70,18 @@ edit_interface_rep::edit_interface_rep ()
       cursor_blink_active (false), cursor_blink_next (0),
       cursor_blink_period (500), table_selection (false),
       mouse_adjusting (false), oc (0, 0), temp_invalid_cursor (false),
-      hover_image_rect (0, 0, 0, 0), hover_image_path (), shadow (NULL),
-      stored (NULL), cur_sb (2), cur_wb (2) {
+      hover_image_rect (0, 0, 0, 0), hover_image_path (), shadow (nullptr),
+      stored (nullptr), cur_sb (2), cur_wb (2) {
   user_active= false;
   input_mode = INPUT_NORMAL;
   gui_root_extents (cur_wx, cur_wy);
 }
 
 edit_interface_rep::~edit_interface_rep () {
-  if (shadow != NULL) tm_delete (shadow);
-  if (stored != NULL) tm_delete (stored);
-  shadow= NULL;
-  stored= NULL;
+  if (shadow != nullptr) tm_delete (shadow);
+  if (stored != nullptr) tm_delete (stored);
+  shadow= nullptr;
+  stored= nullptr;
 }
 
 edit_interface_rep::operator tree () {
@@ -101,10 +101,10 @@ edit_interface_rep::suspend () {
   cursor_blink_next   = 0;
   env_change          = env_change & (~THE_FREEZE);
   notify_change (THE_FOCUS);
-  if (shadow != NULL) tm_delete (shadow);
-  if (stored != NULL) tm_delete (stored);
-  shadow= NULL;
-  stored= NULL;
+  if (shadow != nullptr) tm_delete (shadow);
+  if (stored != nullptr) tm_delete (stored);
+  shadow= nullptr;
+  stored= nullptr;
 }
 
 void
@@ -777,7 +777,7 @@ edit_interface_rep::apply_changes () {
 
     if (get_init_string (PAGE_MEDIUM) == "automatic") {
       SI wx, wy;
-      if (cvw == NULL) ::get_size (get_window (this), wx, wy);
+      if (cvw == nullptr) ::get_size (get_window (this), wx, wy);
       else ::get_size (widget (cvw), wx, wy);
       if (get_init_string (SCROLL_BARS) == "false") sb= 0;
       if (get_server ()->in_full_screen_mode ()) sb= 0;

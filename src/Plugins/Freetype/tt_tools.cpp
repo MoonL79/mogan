@@ -511,7 +511,7 @@ parse_math_record (const string& tt, int parent_table_offset,
 }
 
 // a helper function to parse the MathGlyphConstruction table
-// return true if the sub table GlyphAssembly is not NULL
+// return true if the sub table GlyphAssembly is not nullptr
 static bool
 parse_construction (const string& tt, unsigned int construction_offset,
                     array<unsigned int>& variantGlyph,
@@ -530,7 +530,7 @@ parse_construction (const string& tt, unsigned int construction_offset,
     advanceMeasurement << mathGlyphVariantAdvanceMeasurement;
   }
 
-  // GlyphAssembly table, may be NULL
+  // GlyphAssembly table, may be nullptr
   if (glyphAssemblyOffset > 0) {
     // TODO
     int glyphAssemblyAbsOffset= construction_offset + glyphAssemblyOffset;
@@ -721,7 +721,7 @@ parse_mathtable (const string& buf) {
   parse_record_with_coverage (tt, mathTopAccentAttachmentAbsOffset,
                               topAccentCoverageOffset, 4, table->top_accent);
 
-  // ExtendedShapeCoverage table (may be NULL)
+  // ExtendedShapeCoverage table (may be nullptr)
   if (extendedShapeCoverageOffset > 0) {
     auto extendedShapeCoverage= parse_coverage_table (
         tt, mathGlyphInfoOffset + extendedShapeCoverageOffset);

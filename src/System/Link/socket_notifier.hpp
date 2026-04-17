@@ -28,7 +28,7 @@ public:
 class socket_notifier {
   CONCRETE_NULL (socket_notifier);
   inline socket_notifier (int _fd, void (*_cb) (void*, void*), void* _obj,
-                          void* _info= NULL)
+                          void* _info= nullptr)
       : rep (tm_new<socket_notifier_rep> (_fd, command (_cb, _obj, _info))) {}
   friend bool operator== (socket_notifier sn1, socket_notifier sn2) {
     return (sn1.rep == sn2.rep);

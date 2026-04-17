@@ -57,28 +57,28 @@ ft_initialize () {
   int status= debug_off ();
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Init_FreeType",
                          (pointer&) ft_init_freetype);
-  if (ft_init_freetype == NULL) return true;
+  if (ft_init_freetype == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_New_Face",
                          (pointer&) ft_new_face);
-  if (ft_new_face == NULL) return true;
+  if (ft_new_face == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Select_Charmap",
                          (pointer&) ft_select_charmap);
-  if (ft_select_charmap == NULL) return true;
+  if (ft_select_charmap == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Set_Char_Size",
                          (pointer&) ft_set_char_size);
-  if (ft_set_char_size == NULL) return true;
+  if (ft_set_char_size == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Select_Size",
                          (pointer&) ft_select_size);
-  if (ft_select_size == NULL) return true;
+  if (ft_select_size == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Get_Char_Index",
                          (pointer&) ft_get_char_index);
-  if (ft_get_char_index == NULL) return true;
+  if (ft_get_char_index == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Load_Glyph",
                          (pointer&) ft_load_glyph);
-  if (ft_load_glyph == NULL) return true;
+  if (ft_load_glyph == nullptr) return true;
   (void) symbol_install ("/usr/lib/libfreetype.so", "FT_Render_Glyph",
                          (pointer&) ft_render_glyph);
-  if (ft_render_glyph == NULL) return true;
+  if (ft_render_glyph == nullptr) return true;
   debug_on (status);
   if (ft_init_freetype (&ft_library)) return true;
   if (DEBUG_AUTO) debug_automatic << "Installed TrueType support\n";

@@ -35,7 +35,7 @@
 template <>
 void
 tm_delete<qt_widget_rep> (qt_widget_rep* ptr) {
-  if (ptr == NULL) return;
+  if (ptr == nullptr) return;
   void* mem= ptr->derived_this ();
   ptr->~qt_widget_rep ();
   fast_delete (mem);
@@ -84,7 +84,7 @@ qt_widget_rep::send (slot s, blackbox val) {
     string field= open_box<string> (val);
     if (qwid) {
       QWidget* target= qwid->findChild<QWidget*> (to_qstring (field));
-      if (target == NULL)
+      if (target == nullptr)
         target= qwid->findChild<QWidget*> ("default focus target");
       if (target) target->setFocus (Qt::OtherFocusReason);
     }
@@ -141,7 +141,7 @@ qt_widget_rep::as_qwidget () {
  */
 QAction*
 qt_widget_rep::as_qaction () {
-  QAction* a= new QTMAction (NULL);
+  QAction* a= new QTMAction (nullptr);
   a->setEnabled (false);
   return a;
 }
@@ -157,7 +157,7 @@ qt_widget_rep::as_qlayoutitem () {
 
 QList<QAction*>*
 qt_widget_rep::get_qactionlist () {
-  return NULL;
+  return nullptr;
 }
 
 /*! Returns the widget as a window.

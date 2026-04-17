@@ -41,7 +41,7 @@ protected:
   QStyle* base;
 
 public:
-  explicit QTMProxyStyle (QStyle* _base= NULL);
+  explicit QTMProxyStyle (QStyle* _base= nullptr);
 
   QStyle* baseStyle () const;
 
@@ -109,7 +109,7 @@ class QTMStyle : public QTMProxyStyle {
   Q_OBJECT
 
 public:
-  QTMStyle (QStyle* _style= NULL) : QTMProxyStyle (_style) {}
+  QTMStyle (QStyle* _style= nullptr) : QTMProxyStyle (_style) {}
 
   void  drawComplexControl (ComplexControl             control,
                             const QStyleOptionComplex* option, QPainter* painter,

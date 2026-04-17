@@ -34,7 +34,7 @@ project_attach (string prj_name) {
     ed->notify_change (THE_DECORATIONS);
     ed->require_save ();
   }
-  if (prj_name == "") buf->prj= NULL;
+  if (prj_name == "") buf->prj= nullptr;
   else {
     url full_name= head (buf->buf->name) * prj_name;
     buf->prj     = concrete_buffer_insist (full_name);

@@ -33,7 +33,7 @@ qt_simple_widget_rep::qt_simple_widget_rep ()
     : qt_widget_rep (simple_widget), sequencer (0), completionPopUp (nullptr),
       mathCompletionPopUp (nullptr) {
 #ifndef USE_MUPDF_RENDERER
-  backingPixmap= headless_mode ? NULL : new QPixmap ();
+  backingPixmap= headless_mode ? nullptr : new QPixmap ();
 #else
   bs_w         = 0;
   bs_h         = 0;
@@ -44,7 +44,7 @@ qt_simple_widget_rep::qt_simple_widget_rep ()
 qt_simple_widget_rep::~qt_simple_widget_rep () {
   all_widgets->remove ((pointer) this);
 #ifndef USE_MUPDF_RENDERER
-  if (backingPixmap != NULL) delete backingPixmap;
+  if (backingPixmap != nullptr) delete backingPixmap;
 #endif
   if (completionPopUp != nullptr) delete completionPopUp;
   if (textPopup != nullptr) delete textPopup;
@@ -395,7 +395,7 @@ impress (qt_simple_widget_rep* wid) {
 
 QAction*
 qt_simple_widget_rep::as_qaction () {
-  QAction* a= new QTMAction (NULL);
+  QAction* a= new QTMAction (nullptr);
   QPixmap  pxm (impress (this));
   QIcon    icon (pxm);
   a->setIcon (icon);
@@ -438,7 +438,7 @@ qt_simple_widget_rep::is_invalid () {
 #ifndef USE_MUPDF_RENDERER
 basic_renderer
 qt_simple_widget_rep::get_renderer () {
-  ASSERT (backingPixmap != NULL,
+  ASSERT (backingPixmap != nullptr,
           "internal error in qt_simple_widget_rep::get_renderer");
   qt_renderer_rep* ren= the_qt_renderer ();
   ren->begin ((void*) backingPixmap);

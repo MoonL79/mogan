@@ -17,7 +17,7 @@
 #ifdef QTTEXMACS
 #include "Qt/QTMSockets.hpp"
 
-#define CLT_KO(c) (c == NULL || !c->alive ())
+#define CLT_KO(c) (c == nullptr || !c->alive ())
 
 static array<socket_link*> the_clients;
 static bool                clients_started= false;
@@ -53,7 +53,7 @@ void
 client_stop (int fd) {
   call ("client-remove", object (fd));
   socket_link* client= the_clients[fd];
-  the_clients[fd]    = NULL;
+  the_clients[fd]    = nullptr;
   client->stop ();
   tm_delete (client);
 }
@@ -79,7 +79,7 @@ client_write (int fd, string s) {
 void
 enter_secure_mode (int fd) {
   socket_link* client= the_clients[fd];
-  if (client == NULL || !client->alive ()) return;
+  if (client == nullptr || !client->alive ()) return;
   client->secure_client ();
 }
 
@@ -119,7 +119,7 @@ client_stop (int fd) {
       weak_socket_link client= the_clients[i];
       client->stop ();
       tm_delete (client);
-      client     = NULL;
+      client     = nullptr;
       the_clients= append (range (the_clients, 0, i),
                            range (the_clients, i + 1, N (the_clients)));
     }
@@ -129,13 +129,13 @@ static weak_socket_link
 find_client (int fd) {
   for (int i= 0; i < N (the_clients); i++)
     if (the_clients[i]->io == fd) return the_clients[i];
-  return NULL;
+  return nullptr;
 }
 
 string
 client_read (int fd) {
   weak_socket_link client= find_client (fd);
-  if (client == NULL || !client->alive) return "";
+  if (client == nullptr || !client->alive) return "";
   if (!client->complete_packet (LINK_OUT)) return "";
   bool   success;
   string back= client->read_packet (LINK_OUT, 0, success);
@@ -146,7 +146,7 @@ client_read (int fd) {
 void
 client_write (int fd, string s) {
   weak_socket_link client= find_client (fd);
-  if (client == NULL || !client->alive) return;
+  if (client == nullptr || !client->alive) return;
   // cout << "Client write " << s << "\n";
   client->write_packet (s, LINK_IN);
 }
@@ -154,7 +154,7 @@ client_write (int fd, string s) {
 void
 enter_secure_mode (int fd) {
   weak_socket_link client= find_client (fd);
-  if (client == NULL || !client->alive) return;
+  if (client == nullptr || !client->alive) return;
   client->secure_client ();
 }
 #endif

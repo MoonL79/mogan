@@ -193,7 +193,7 @@ schedule_destruction (QAction* a) {
  ******************************************************************************/
 
 qt_ui_element_rep::qt_ui_element_rep (types _type, blackbox _load)
-    : qt_widget_rep (_type), load (_load), cachedActionList (NULL) {}
+    : qt_widget_rep (_type), load (_load), cachedActionList (nullptr) {}
 
 qt_ui_element_rep::~qt_ui_element_rep () {
   if (cachedActionList) {
@@ -312,7 +312,7 @@ qt_ui_element_rep::as_qaction () {
   // debug_widgets << "as_qaction: " << type_as_string() << LF;
 
   // DON'T try to always cache the action returned: this breaks dynamic menus!
-  QAction* act= NULL;
+  QAction* act= nullptr;
 
   switch (type) {
   case vertical_menu:
@@ -323,7 +323,7 @@ qt_ui_element_rep::as_qaction () {
       typedef array<widget> T;
       array<widget>         arr= open_box<T> (load);
 
-      act= new QTMAction (NULL);
+      act= new QTMAction (nullptr);
       act->setText (qt_translate ("Menu"));
       QMenu* m= new QMenu ();
       for (int i= 0; i < N (arr); i++) {
@@ -389,7 +389,7 @@ qt_ui_element_rep::as_qaction () {
   case menu_separator:
     // a horizontal or vertical menu separator
     {
-      act= new QTMAction (NULL);
+      act= new QTMAction (nullptr);
       act->setSeparator (true);
     }
     break;
@@ -407,7 +407,7 @@ qt_ui_element_rep::as_qaction () {
       string                    name= x.x1;
       int style= x.x2; // FIXME: ignored. Use a QWidgeAction to use it?
 
-      act= new QTMAction (NULL);
+      act= new QTMAction (nullptr);
       act->setText (to_qstring (name));
       act->setEnabled (false);
       act->setFont (to_qfont (style, act->font ()));
@@ -532,7 +532,7 @@ qt_ui_element_rep::as_qaction () {
       // color col  = x.x3;
       // bool tsp   = x.x4;
 
-      QTMAction* a= new QTMAction (NULL);
+      QTMAction* a= new QTMAction (nullptr);
       a->set_text (str);
       a->setFont (to_qfont (style, a->font ()));
       act= a;
@@ -543,7 +543,7 @@ qt_ui_element_rep::as_qaction () {
     // a widget with an X pixmap icon
     {
       url image= open_box<url> (load);
-      act      = new QTMAction (NULL);
+      act      = new QTMAction (nullptr);
       act->setIcon (qt_load_icon (image));
     }
     break;
@@ -698,7 +698,7 @@ qt_ui_element_rep::as_qlayoutitem () {
   }
 
   case menu_group: {
-    return NULL;
+    return nullptr;
   }
 
   case pulldown_button:
@@ -747,7 +747,7 @@ qt_ui_element_rep::as_qlayoutitem () {
   default:;
   }
 
-  return NULL;
+  return nullptr;
 }
 
 /*
@@ -946,7 +946,7 @@ qt_ui_element_rep::as_qwidget () {
     QLabel* w= new QLabel ();
     /*
     //FIXME: implement refresh when changing language
-    QTMAction* a= new QTMAction (NULL);
+    QTMAction* a= new QTMAction (nullptr);
     a->set_text (str);
      */
     w->setText (to_qstring (str));
@@ -962,7 +962,7 @@ qt_ui_element_rep::as_qwidget () {
     // a widget with an X pixmap icon
   case xpm_widget: {
     url     image= open_box<url> (load);
-    QLabel* l    = new QLabel (NULL);
+    QLabel* l    = new QLabel (nullptr);
     l->setPixmap (as_pixmap (*xpm_image (image)));
     qwid= l;
   } break;
@@ -974,7 +974,7 @@ qt_ui_element_rep::as_qwidget () {
     bool                               check= x.x2;
     int                                style= x.x3;
 
-    QCheckBox* w= new QCheckBox (NULL);
+    QCheckBox* w= new QCheckBox (nullptr);
     w->setCheckState (check ? Qt::Checked : Qt::Unchecked);
     qt_apply_tm_style (w, style);
     w->setFocusPolicy (Qt::StrongFocus);
@@ -994,7 +994,7 @@ qt_ui_element_rep::as_qwidget () {
     QString     value = to_qstring (x.x3);
     int         style = x.x4;
 
-    QTMComboBox* w= new QTMComboBox (NULL);
+    QTMComboBox* w= new QTMComboBox (nullptr);
     if (values.isEmpty ()) values << QString (""); // safeguard
 
     w->setEditable (value.isEmpty () ||
@@ -1183,7 +1183,7 @@ qt_ui_element_rep::as_qwidget () {
   } break;
 
   default:
-    qwid= NULL;
+    qwid= nullptr;
   }
 
   // qwid->setFocusPolicy (Qt::StrongFocus); // Bad idea: containers get focus

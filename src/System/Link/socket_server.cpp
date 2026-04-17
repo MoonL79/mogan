@@ -134,7 +134,7 @@ socket_server_rep::start () {
 
   alive= true;
 
-  sn= socket_notifier (server, &socket_server_callback, this, NULL);
+  sn= socket_notifier (server, &socket_server_callback, this, nullptr);
   add_notifier (sn);
 
   return "ok";
@@ -204,7 +204,7 @@ socket_server_rep::stop () {
   WSACleanup ();
 #else
   close (server);
-  wait (NULL);
+  wait (nullptr);
 #endif
 }
 
@@ -230,7 +230,7 @@ socket_server_callback (void* obj, void* info) {
     struct timeval tv;
     tv.tv_sec = 0;
     tv.tv_usec= 0;
-    select (max_fd, &rfds, NULL, NULL, &tv);
+    select (max_fd, &rfds, nullptr, nullptr, &tv);
 
     busy= false;
     if (ss->alive && FD_ISSET (ss->server, &rfds)) {

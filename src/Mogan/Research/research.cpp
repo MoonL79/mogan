@@ -64,8 +64,8 @@ extern tree   the_et;
 extern bool   headless_mode;
 
 #ifdef QTTEXMACS
-static QTMApplication*     qtmapp    = NULL;
-static QTMCoreApplication* qtmcoreapp= NULL;
+static QTMApplication*     qtmapp    = nullptr;
+static QTMCoreApplication* qtmcoreapp= nullptr;
 bool                       show_startup_login_dialog ();
 #endif
 

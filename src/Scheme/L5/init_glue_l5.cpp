@@ -303,12 +303,12 @@ open_pricing_url () {
   // 获取当前窗口
   if (!has_current_window ()) return;
   tm_window win= concrete_window ();
-  if (win == NULL) return;
+  if (win == nullptr) return;
 
   // 尝试将widget转换为qt_tm_widget_rep
   widget            w        = win->win;
   qt_tm_widget_rep* tm_widget= dynamic_cast<qt_tm_widget_rep*> (w.rep);
-  if (tm_widget != NULL) {
+  if (tm_widget != nullptr) {
     tm_widget->openRenewalPage ();
   }
 }

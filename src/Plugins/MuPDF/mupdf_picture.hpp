@@ -78,13 +78,13 @@ picture as_mupdf_picture (picture pic);
 fz_image*  mupdf_load_image (url u);
 fz_pixmap* mupdf_load_pixmap (url u, int w, int h, tree eff, SI pixel);
 bool       mupdf_supports (string extension);
-bool   mupdf_normal_image_size (url image, int& w, int& h, string* wcm= NULL,
-                                string* hcm= NULL);
-bool   mupdf_pdf_image_size (url image, int& w, int& h, string* wcm= NULL,
-                             string* hcm= NULL);
+bool   mupdf_normal_image_size (url image, int& w, int& h, string* wcm= nullptr,
+                                string* hcm= nullptr);
+bool   mupdf_pdf_image_size (url image, int& w, int& h, string* wcm= nullptr,
+                             string* hcm= nullptr);
 void   mupdf_pretty_image_size (url image, string& w, string& h);
 string mupdf_load_and_parse_image (const char* path, int& w, int& h,
-                                   string extension, string* wcm= NULL,
-                                   string* hcm= NULL);
+                                   string extension, string* wcm= nullptr,
+                                   string* hcm= nullptr);
 
 #endif // defined MUPDF_PICTURE_HPP

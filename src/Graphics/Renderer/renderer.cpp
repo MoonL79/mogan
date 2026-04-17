@@ -76,7 +76,7 @@ set_retina_scale (double s) {
 renderer_rep::renderer_rep (bool screen_flag)
     : ox (0), oy (0), cx1 (0), cy1 (0), cx2 (0), cy2 (0),
       is_screen (screen_flag), zoomf (std_shrinkf), shrinkf (1), pixel (PIXEL),
-      retina_pixel (PIXEL), brushpx (-1), thicken (0), master (NULL),
+      retina_pixel (PIXEL), brushpx (-1), thicken (0), master (nullptr),
       cur_page (0) {}
 
 renderer_rep::~renderer_rep () {}
@@ -88,12 +88,12 @@ renderer_rep::is_started () {
 
 void*
 renderer_rep::get_handle () {
-  return NULL;
+  return nullptr;
 }
 
 void*
 renderer_rep::get_data_handle () {
-  return NULL;
+  return nullptr;
 }
 
 /******************************************************************************
@@ -623,7 +623,7 @@ renderer_rep::shadow (scalable& im, SI x1, SI y1, SI x2, SI y2) {
   (void) x2;
   (void) y2;
   TM_FAILED ("shadowing is not supported");
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -639,7 +639,7 @@ renderer
 scalable_renderer (scalable im) {
   (void) im;
   TM_FAILED ("not yet implemented");
-  return NULL;
+  return nullptr;
 }
 
 void
@@ -664,7 +664,7 @@ picture_renderer (picture p, double zoomf) {
   (void) p;
   (void) zoomf;
   TM_FAILED ("not yet implemented");
-  return NULL;
+  return nullptr;
 }
 
 picture

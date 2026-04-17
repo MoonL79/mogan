@@ -91,7 +91,7 @@ class QTMLazyMenu : public QMenu {
   bool            show_right;
 
 public:
-  QTMLazyMenu (promise<widget> _pm, QWidget* p= NULL, bool right= false);
+  QTMLazyMenu (promise<widget> _pm, QWidget* p= nullptr, bool right= false);
   void         attachTo (QAction* a);
   virtual void showEvent (QShowEvent* event);
 
@@ -124,7 +124,7 @@ class QTMAction : public QAction {
   string  str;
 
 public:
-  QTMAction (QObject* parent= NULL);
+  QTMAction (QObject* parent= nullptr);
   ~QTMAction ();
 
   void set_text (string s);
@@ -145,7 +145,7 @@ class QTMWidgetAction : public QWidgetAction {
   widget wid;
 
 public:
-  QTMWidgetAction (widget _wid, QObject* parent= NULL);
+  QTMWidgetAction (widget _wid, QObject* parent= nullptr);
 
 public slots:
   void doRefresh () {};
@@ -167,7 +167,7 @@ class QTMTileAction : public QWidgetAction {
   int               cols;
 
 public:
-  QTMTileAction (array<widget>& arr, int _cols, QObject* parent= NULL);
+  QTMTileAction (array<widget>& arr, int _cols, QObject* parent= nullptr);
   virtual QWidget* createWidget (QWidget* parent);
 };
 
@@ -179,7 +179,7 @@ class QTMMinibarAction : public QWidgetAction {
   QVector<QAction*> actions;
 
 public:
-  QTMMinibarAction (array<widget>& arr, QObject* parent= NULL);
+  QTMMinibarAction (array<widget>& arr, QObject* parent= nullptr);
   virtual QWidget* createWidget (QWidget* parent);
 };
 
@@ -194,7 +194,7 @@ class QTMMenuButton : public QToolButton {
   Q_OBJECT
 
 public:
-  QTMMenuButton (QWidget* parent= NULL);
+  QTMMenuButton (QWidget* parent= nullptr);
 
   void mouseReleaseEvent (QMouseEvent* e);
   void mousePressEvent (QMouseEvent* e);
@@ -207,7 +207,7 @@ class QTMMenuWidget : public QWidget {
   Q_OBJECT
 
 public:
-  QTMMenuWidget (QWidget* parent= NULL);
+  QTMMenuWidget (QWidget* parent= nullptr);
   void paintEvent (QPaintEvent* event);
 };
 
@@ -304,7 +304,7 @@ class QTMTabWidget : public QTabWidget {
   Q_OBJECT
 
 public:
-  QTMTabWidget (QWidget* p= NULL);
+  QTMTabWidget (QWidget* p= nullptr);
 
 public slots:
   void resizeOthers (int index);
@@ -382,7 +382,7 @@ class QTMListView : public QListView {
 public:
   QTMListView (const command& cmd, const QStringList& vals, const QStringList&,
                bool multiple, bool scroll= false, bool filtered= false,
-               QWidget* parent= NULL);
+               QWidget* parent= nullptr);
 
   QSortFilterProxyModel* filter () const { return filterModel; }
   bool                   isScrollable () const {
@@ -449,7 +449,7 @@ class QTMScrollArea : public QScrollArea {
   typedef QList<QTMListView*>::iterator ListViewsIterator;
 
 public:
-  QTMScrollArea (QWidget* p= NULL) : QScrollArea (p) {};
+  QTMScrollArea (QWidget* p= nullptr) : QScrollArea (p) {};
   void setWidgetAndConnect (QWidget* w);
 
 protected:

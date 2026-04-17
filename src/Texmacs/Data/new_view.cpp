@@ -38,7 +38,7 @@ using moebius::drd::the_drd;
  ******************************************************************************/
 
 static hashmap<tree, int>     view_number_table (0);
-static hashmap<tree, pointer> view_table (NULL);
+static hashmap<tree, pointer> view_table (nullptr);
 
 static int
 new_view_number (url u) {
@@ -48,7 +48,7 @@ new_view_number (url u) {
 }
 
 tm_view_rep::tm_view_rep (tm_buffer buf2, editor ed2)
-    : buf (buf2), ed (ed2), win (NULL), win_tabpage (NULL),
+    : buf (buf2), ed (ed2), win (nullptr), win_tabpage (nullptr),
       nr (new_view_number (buf->buf->name)) {}
 
 static string
@@ -79,7 +79,7 @@ decode_url (string s) {
 
 url
 abstract_view (tm_view vw) {
-  if (vw == NULL) return url_none ();
+  if (vw == nullptr) return url_none ();
   string name= encode_url (vw->buf->buf->name);
   // cout << vw->buf->buf->name << " -> " << name << "\n";
   string nr= as_string (vw->nr);
@@ -88,12 +88,12 @@ abstract_view (tm_view vw) {
 
 tm_view
 concrete_view (url u) {
-  if (is_none (u)) return NULL;
+  if (is_none (u)) return nullptr;
   string s= as_string (u);
-  if (!starts (s, "tmfs://view/")) return NULL;
+  if (!starts (s, "tmfs://view/")) return nullptr;
   s    = s (N (string ("tmfs://view/")), N (s));
   int i= search_forwards ("/", 0, s);
-  if (i < 0) return NULL;
+  if (i < 0) return nullptr;
   int nr  = as_int (s (0, i));
   url name= decode_url (s (i + 1, N (s)));
   // cout << s (i+1, N(s)) << " -> " << name << "\n";
@@ -101,27 +101,27 @@ concrete_view (url u) {
   if (!is_nil (buf))
     for (i= 0; i < N (buf->vws); i++)
       if (buf->vws[i]->nr == nr) return buf->vws[i];
-  return NULL;
+  return nullptr;
 }
 
 /******************************************************************************
  * Views associated to editor, window, or buffer
  ******************************************************************************/
 
-tm_view the_view= NULL;
+tm_view the_view= nullptr;
 
 bool
 has_current_view () {
-  return the_view != NULL;
+  return the_view != nullptr;
 }
 
 void
 set_current_view (url u) {
   tm_view vw= concrete_view (u);
   // ASSERT (is_none (u) || starts (as_string (tail (u)), "no_name") || vw !=
-  // NULL, "bad view");
+  // nullptr, "bad view");
   the_view= vw;
-  if (vw != NULL) {
+  if (vw != nullptr) {
     the_drd                 = vw->ed->drd;
     vw->buf->buf->last_visit= texmacs_time ();
   }
@@ -129,13 +129,13 @@ set_current_view (url u) {
 
 url
 get_current_view () {
-  ASSERT (the_view != NULL, "no active view");
+  ASSERT (the_view != nullptr, "no active view");
   return abstract_view (the_view);
 }
 
 url
 get_current_view_safe () {
-  if (the_view == NULL) return url_none ();
+  if (the_view == nullptr) return url_none ();
   return abstract_view (the_view);
 }
 
@@ -145,11 +145,11 @@ editor
 get_current_editor () {
   url     u = get_current_view ();
   tm_view vw= concrete_view (u);
-  if (vw == NULL) { // HACK: shouldn't happen!
-    TM_FAILED ("Current view is NULL");
+  if (vw == nullptr) { // HACK: shouldn't happen!
+    TM_FAILED ("Current view is nullptr");
     notify_delete_view (u);
     array<url> history= get_all_views ();
-    if (as_tree (history) == as_tree (NULL) || N (history) == 0)
+    if (as_tree (history) == as_tree (nullptr) || N (history) == 0)
       TM_FAILED ("View history is empty")
     return view_to_editor (history[N (history) - 1]);
   }
@@ -169,22 +169,22 @@ buffer_to_views (url name) {
 url
 view_to_buffer (url u) {
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return url_none ();
+  if (vw == nullptr) return url_none ();
   return vw->buf->buf->name;
 }
 
 url
 view_to_window (url u) {
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return url_none ();
+  if (vw == nullptr) return url_none ();
   return abstract_window (vw->win);
 }
 
 url
 view_to_window_of_tabpage (url u) {
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return url_none ();
-  if (vw->win_tabpage == NULL) return url_none ();
+  if (vw == nullptr) return url_none ();
+  if (vw->win_tabpage == nullptr) return url_none ();
 
   // Try to get the window URL, but catch any potential memory access issues
   try {
@@ -197,7 +197,7 @@ view_to_window_of_tabpage (url u) {
 editor
 view_to_editor (url u) {
   tm_view vw= concrete_view (u);
-  if (vw == NULL) {
+  if (vw == nullptr) {
     notify_delete_view (u); // HACK: returns to valid (?) state.
     failed_error << "View is " << u << "\n";
     TM_FAILED ("View admits no editor");
@@ -213,7 +213,7 @@ count_tabpages_in_window (url win_u) {
   int        vws_N= N (vws);
   for (int i= 0; i < vws_N; i++) {
     tm_view vwi= concrete_view (vws[i]);
-    if (vwi != NULL && vwi->win_tabpage == win) {
+    if (vwi != nullptr && vwi->win_tabpage == win) {
       count++;
     }
   }
@@ -246,11 +246,11 @@ get_recent_view (url name, bool same, bool other, bool active, bool passive) {
   int i;
   for (i= 0; i < view_history_instance.size (); i++) {
     tm_view vw= concrete_view (view_history_instance.get_view_at_index (i));
-    if (vw != NULL) {
+    if (vw != nullptr) {
       if (same && vw->buf->buf->name != name) continue;
       if (other && vw->buf->buf->name == name) continue;
-      if (active && vw->win == NULL) continue;
-      if (passive && vw->win != NULL) continue;
+      if (active && vw->win == nullptr) continue;
+      if (passive && vw->win != nullptr) continue;
       return view_history_instance.get_view_at_index (i);
     }
   }
@@ -408,7 +408,7 @@ get_recent_view (url name) {
 void
 delete_view (url u) {
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return;
+  if (vw == nullptr) return;
   tm_buffer buf= vw->buf;
   int       i, j, n= N (buf->vws);
   for (i= 0; i < n; i++)
@@ -420,7 +420,7 @@ delete_view (url u) {
       buf->vws= a;
     }
   notify_delete_view (u);
-  vw->ed->buf= NULL;
+  vw->ed->buf= nullptr;
   tm_delete (vw);
 }
 
@@ -432,26 +432,26 @@ kill_tabpage (url win_u, url u) {
   // 因此，本方法以 tabpage 为单位执行关闭操作，实现了标签页关闭的完整逻辑
   // 在关闭文档，或标签页时都将调用此方法。
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return;
-  if (vw->buf != NULL && vw->buf->buf->name == url ("tmfs://startup-tab")) {
+  if (vw == nullptr) return;
+  if (vw->buf != nullptr && vw->buf->buf->name == url ("tmfs://startup-tab")) {
     return;
   }
   tm_window win        = vw->win;
   tm_window win_tabpage= vw->win_tabpage;
-  if (win_tabpage == NULL) return;
-  if (win == NULL) win= win_tabpage;
+  if (win_tabpage == nullptr) return;
+  if (win == nullptr) win= win_tabpage;
   bool is_current                    = (get_current_view () == u);
   bool refresh_tabbar_for_non_current= !is_current;
 
   // 第一步: 设定 win_tabpage
   // 将 win_tabpage 设为空指针，因为要关闭tabpage了
-  vw->win_tabpage= NULL;
+  vw->win_tabpage= nullptr;
 
   // 第二步: Detach routine
   // 如果是当前视图，则需要将其从窗口中分离
   // 参照 detach_view 方法
   if (is_current) {
-    vw->win   = NULL;
+    vw->win   = nullptr;
     widget wid= win_tabpage->wid;
     vw->ed->suspend ();
     set_scrollable (wid, glue_widget ());
@@ -469,7 +469,7 @@ kill_tabpage (url win_u, url u) {
   if (is_current) {
     for (int i= 0; i < N (vws); i++) {
       tm_view vw2= concrete_view (vws[i]);
-      if (vw2 != NULL && vw2 != vw && vw2->win_tabpage == win_tabpage) {
+      if (vw2 != nullptr && vw2 != vw && vw2->win_tabpage == win_tabpage) {
         window_set_view (win_u, vws[i], true);
         found= true;
         break;
@@ -517,9 +517,9 @@ kill_tabpage (url win_u, url u) {
   // 以强制触发一次 UI 更新。
   if (refresh_tabbar_for_non_current) {
     tm_view current_vw= concrete_view (get_current_view_safe ());
-    if (current_vw != NULL && current_vw->win_tabpage == win_tabpage) {
+    if (current_vw != nullptr && current_vw->win_tabpage == win_tabpage) {
       editor current_ed= current_vw->ed;
-      if (current_ed != NULL) {
+      if (current_ed != nullptr) {
         current_ed->suspend ();
         current_ed->resume ();
       }
@@ -549,10 +549,10 @@ void
 attach_view (url win_u, url u) {
   tm_window win= concrete_window (win_u);
   tm_view   vw = concrete_view (u);
-  if (win == NULL || vw == NULL) return;
+  if (win == nullptr || vw == nullptr) return;
   // cout << "Attach view " << vw->buf->buf->name << "\n";
   vw->win= win;
-  if (vw->win_tabpage == NULL) {
+  if (vw->win_tabpage == nullptr) {
     vw->win_tabpage= win;
   }
   widget wid= win->wid;
@@ -572,11 +572,11 @@ attach_view (url win_u, url u) {
 void
 detach_view (url u) {
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return;
+  if (vw == nullptr) return;
   tm_window win= vw->win;
-  if (win == NULL) return;
+  if (win == nullptr) return;
   // cout << "Detach view " << vw->buf->buf->name << "\n";
-  vw->win   = NULL;
+  vw->win   = nullptr;
   widget wid= win->wid;
   ASSERT (is_attached (wid), "widget should be attached");
   vw->ed->suspend ();
@@ -594,12 +594,12 @@ void
 window_set_view (url win_u, url new_u, bool focus) {
   // cout << "set view " << win_u << ", " << new_u << ", " << focus << "\n";
   tm_window win= concrete_window (win_u);
-  if (win == NULL) return;
+  if (win == nullptr) return;
   // cout << "Found window\n";
   tm_view new_vw= concrete_view (new_u);
-  if (new_vw == NULL || new_vw->win == win) return;
+  if (new_vw == nullptr || new_vw->win == win) return;
   // cout << "Found view\n";
-  ASSERT (new_vw->win == NULL, "view attached to other window");
+  ASSERT (new_vw->win == nullptr, "view attached to other window");
   url old_u= window_to_view (win_u);
   if (!is_none (old_u)) detach_view (old_u);
   attach_view (win_u, new_u);
@@ -715,7 +715,7 @@ switch_to_other_tabpage (url view_u) {
   int        vws_N= N (vws);
   for (int i= 0; i < vws_N; i++) {
     tm_view vwi= concrete_view (vws[i]);
-    if (vwi != NULL && vwi != view && vwi->win_tabpage == view->win_tabpage) {
+    if (vwi != nullptr && vwi != view && vwi->win_tabpage == view->win_tabpage) {
       window_set_view (abstract_window (view->win), vws[i], true);
       return true;
     }
@@ -728,10 +728,10 @@ switch_to_buffer (url name) {
   // cout << "Switching to buffer " << name << "\n";
   url     u = get_passive_view_of_tabpage (name);
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return;
+  if (vw == nullptr) return;
   window_set_view (get_current_window (), u, true);
   tm_window nwin= vw->win;
-  if (nwin != NULL)
+  if (nwin != nullptr)
     nwin->set_window_zoom_factor (nwin->get_window_zoom_factor ());
   // cout << "Switched to buffer " << vw->buf->buf->name << "\n";
 }
@@ -740,7 +740,7 @@ void
 set_current_drd (url name) {
   url     u = get_passive_view (name);
   tm_view vw= concrete_view (u);
-  if (vw != NULL) the_drd= vw->ed->drd;
+  if (vw != nullptr) the_drd= vw->ed->drd;
 }
 
 void
@@ -749,7 +749,7 @@ focus_on_editor (editor ed) {
   for (int i= 0; i < N (bufs); i++) {
     array<url> vs= buffer_to_views (bufs[i]);
     for (int j= 0; j < N (vs); j++)
-      if (concrete_view (vs[j]) != NULL && view_to_editor (vs[j]) == ed) {
+      if (concrete_view (vs[j]) != nullptr && view_to_editor (vs[j]) == ed) {
         set_current_view (vs[j]);
         return;
       }
@@ -794,7 +794,7 @@ bool
 focus_on_buffer (url name, bool isfocus) {
   // Focus on the most recent view on a buffer, preferably active in a window
   // Return false if no view exists for the buffer
-  if (the_view != NULL && the_view->buf->buf->name == name) return true;
+  if (the_view != nullptr && the_view->buf->buf->name == name) return true;
   url r= get_recent_view (name, true, false, true, false);
   if (is_none (r)) r= get_recent_view (name, true, false, false, false);
   if (is_none (r)) {
@@ -810,7 +810,7 @@ focus_on_buffer (url name, bool isfocus) {
 
 bool
 var_focus_on_buffer (url name) {
-  if (the_view != NULL && the_view->buf->buf->name == name) return true;
+  if (the_view != nullptr && the_view->buf->buf->name == name) return true;
   url r= get_recent_view (name, true, false, true, false);
   if (is_none (r)) r= get_recent_view (name, true, false, false, false);
   if (is_none (r)) {
@@ -830,11 +830,11 @@ void
 make_cursor_visible (url u) {
   // Make the cursor visible in the view
   tm_view vw= concrete_view (u);
-  if (vw == NULL) return;
+  if (vw == nullptr) return;
   tm_window win= vw->win;
-  if (win == NULL) return;
+  if (win == nullptr) return;
   editor ed= vw->ed;
-  if (ed == NULL) return;
+  if (ed == nullptr) return;
   ed->make_cursor_visible ();
 }
 

@@ -104,7 +104,7 @@ qt_field_widget_rep::as_qwidget () {
     widget wid=
         input_text_widget (command (), type, array<string> (0), 0, "20em");
     QLineEdit* le= qobject_cast<QTMLineEdit*> (concrete (wid)->as_qwidget ());
-    ASSERT (le != NULL, "qt_field_widget_rep: expecting QTMLineEdit");
+    ASSERT (le != nullptr, "qt_field_widget_rep: expecting QTMLineEdit");
     le->setObjectName (to_qstring (type));
     lab->setBuddy (le);
     hl->addWidget (le);
@@ -382,7 +382,7 @@ qt_input_text_widget_rep::as_qaction () {
  */
 QWidget*
 qt_input_text_widget_rep::as_qwidget () {
-  QTMLineEdit* le= new QTMLineEdit (NULL, type, width, style, cmd);
+  QTMLineEdit* le= new QTMLineEdit (nullptr, type, width, style, cmd);
   qwid           = le;
   bool can_autocommit=
       !(ends (type, "search") || ends (type, "replace") ||

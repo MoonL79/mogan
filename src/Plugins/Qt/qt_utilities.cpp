@@ -189,8 +189,8 @@ enum WindowsNativeModifiers {
 
 void
 qt_dump (QObject* obj, int indent) {
-  if (obj == NULL) {
-    cout << "NULL\n";
+  if (obj == nullptr) {
+    cout << "nullptr\n";
     return;
   }
   for (int j= 0; j < indent; ++j)
@@ -975,7 +975,7 @@ qt_papersize_to_string (QPrinter::PaperSize sz) {
 bool
 qt_print (bool& to_file, bool& landscape, string& pname, url& filename,
           string& first, string& last, string& paper_type) {
-  static QPrinter* qprinter= NULL;
+  static QPrinter* qprinter= nullptr;
   if (!qprinter) {
     qprinter= new QPrinter;
   }

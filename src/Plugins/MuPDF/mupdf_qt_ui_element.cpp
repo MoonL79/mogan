@@ -20,7 +20,7 @@ qt_glue_widget_rep::render () {
     h/= factor;
   }
   fz_pixmap* pix= fz_new_pixmap (
-      mupdf_context (), fz_device_rgb (mupdf_context ()), w, h, NULL, 1);
+      mupdf_context (), fz_device_rgb (mupdf_context ()), w, h, nullptr, 1);
   mupdf_renderer_rep* ren= the_mupdf_renderer ();
   ren->begin (pix);
   rectangle r= rectangle (0, 0, w, h);

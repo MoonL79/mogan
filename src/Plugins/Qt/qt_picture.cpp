@@ -185,7 +185,7 @@ qt_image_renderer_rep::qt_image_renderer_rep (picture p, double zoom)
 qt_image_renderer_rep::~qt_image_renderer_rep () {
   painter->end ();
   delete painter;
-  painter= NULL;
+  painter= nullptr;
 }
 
 void
@@ -288,7 +288,7 @@ may_transform (url file_name, const QImage& pm) {
 
 QImage*
 get_image_for_real (url u, int w, int h, tree eff, SI pixel) {
-  QImage* pm= NULL;
+  QImage* pm= nullptr;
 
   if (suffix (u) == "svg") {
     QSvgRenderer renderer (utf8_to_qstring (concretize (u)));
@@ -301,7 +301,7 @@ get_image_for_real (url u, int w, int h, tree eff, SI pixel) {
     pm= new QImage ();
     if (!qt_load_image_from_ramdisc (u, *pm)) {
       delete pm;
-      pm= NULL;
+      pm= nullptr;
     }
   }
   else if (qt_supports (u)) {
@@ -315,10 +315,10 @@ get_image_for_real (url u, int w, int h, tree eff, SI pixel) {
   }
 
   // Error Handling
-  if (pm == NULL || pm->isNull ()) {
-    if (pm != NULL) delete pm;
+  if (pm == nullptr || pm->isNull ()) {
+    if (pm != nullptr) delete pm;
     cout << "TeXmacs] warning: cannot render " << concretize (u) << "\n";
-    return NULL;
+    return nullptr;
   }
 
   // Scaling
@@ -360,7 +360,7 @@ qt_clean_picture_cache () {
     tree    key= it->next ();
     QImage* im = qt_pic_cache[key];
     delete im;
-    qt_pic_cache (key)= (QImage*) NULL;
+    qt_pic_cache (key)= (QImage*) nullptr;
   }
   qt_pic_cache= hashmap<tree, QImage*> ();
 }
@@ -369,7 +369,7 @@ qt_clean_picture_cache () {
 picture
 load_picture (url u, int w, int h, tree eff, int pixel) {
   QImage* im= get_image (u, w, h, eff, pixel);
-  if (im == NULL) return error_picture (w, h);
+  if (im == nullptr) return error_picture (w, h);
   return qt_picture (*im, 0, 0);
 }
 #endif
@@ -450,7 +450,7 @@ qt_load_svg_icon (url file_name) {
   }
 
   QSvgRenderer renderer (to_qstring (as_string (file_name)));
-  QImage*      pm= NULL;
+  QImage*      pm= nullptr;
   pm= new QImage (size.width (), size.height (), QImage::Format_ARGB32);
   pm->fill (Qt::transparent);
   QPainter painter (pm);

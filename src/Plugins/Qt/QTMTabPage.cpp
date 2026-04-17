@@ -630,7 +630,7 @@ QTMTabPageContainer::dropEvent (QDropEvent* e) {
       tm_window dragged_window= concrete_view (dragged_view)->win_tabpage;
       url target_view= m_tabPageList[0]->m_viewUrl; // 通过view来获取window
       tm_window target_window= concrete_view (target_view)->win_tabpage;
-      bool      attached     = (concrete_view (dragged_view)->win != NULL);
+      bool      attached     = (concrete_view (dragged_view)->win != nullptr);
       // 注意：dragged_window 有可能被 view_set_window 释放
       if (!view_set_window (dragged_view, abstract_window (target_window),
                             attached)) {

@@ -65,7 +65,7 @@ perform_select () {
     struct timeval tv;
     tv.tv_sec = 0;
     tv.tv_usec= 0;
-    int nr    = select (max_fd, &rfds, NULL, NULL, &tv);
+    int nr    = select (max_fd, &rfds, nullptr, nullptr, &tv);
     if (nr == 0) break;
 
     it= iterate (notifiers);

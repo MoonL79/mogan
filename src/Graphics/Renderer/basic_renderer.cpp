@@ -159,7 +159,7 @@ basic_renderer_rep::new_shadow (renderer& dev) {
 
 void
 basic_renderer_rep::delete_shadow (renderer& dev) {
-  dev= NULL;
+  dev= nullptr;
   if (DEBUG_EVENTS) debug_events << "REN delete_shadow\n";
 }
 

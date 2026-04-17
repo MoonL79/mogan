@@ -23,19 +23,19 @@ lazy make_lazy_paragraph (edit_env env, array<box> bs, path ip);
  ******************************************************************************/
 
 table_rep::table_rep (edit_env env2, int status2, int i0b, int j0b)
-    : var (""), env (env2), status (status2), i0 (i0b), j0 (j0b), T (NULL),
-      nr_rows (0), mw (NULL), lw (NULL), rw (NULL), width (0), height (0) {}
+    : var (""), env (env2), status (status2), i0 (i0b), j0 (j0b), T (nullptr),
+      nr_rows (0), mw (nullptr), lw (nullptr), rw (nullptr), width (0), height (0) {}
 
 table_rep::~table_rep () {
-  if (T != NULL) {
+  if (T != nullptr) {
     int i;
     for (i= 0; i < nr_rows; i++)
-      if (T[i] != NULL) tm_delete_array (T[i]);
+      if (T[i] != nullptr) tm_delete_array (T[i]);
     tm_delete_array (T);
   }
-  if (mw != NULL) tm_delete_array (mw);
-  if (lw != NULL) tm_delete_array (lw);
-  if (rw != NULL) tm_delete_array (rw);
+  if (mw != nullptr) tm_delete_array (mw);
+  if (lw != nullptr) tm_delete_array (lw);
+  if (rw != nullptr) tm_delete_array (rw);
 }
 
 void
@@ -91,7 +91,7 @@ table_rep::typeset_table (tree fm, tree t, path ip) {
   nr_cols= 0;
   T      = tm_new_array<cell*> (nr_rows);
   for (i= 0; i < nr_rows; i++)
-    T[i]= NULL;
+    T[i]= nullptr;
   STACK_NEW_ARRAY (subformat, tree, nr_rows);
   extract_format (fm, subformat, nr_rows);
   for (i= 0; i < nr_rows; i++) {

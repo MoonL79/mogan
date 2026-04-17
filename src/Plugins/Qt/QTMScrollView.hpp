@@ -40,7 +40,7 @@ class QTMScrollView : public QAbstractScrollArea {
       p_surface; // Actual drawing area, centered (or not) in the scrollarea
 
 public:
-  QTMScrollView (QWidget* _parent= NULL);
+  QTMScrollView (QWidget* _parent= nullptr);
 
   QPoint origin () { return p_origin; }
   void   setOrigin (QPoint newOrigin);

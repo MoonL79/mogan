@@ -23,29 +23,29 @@ typedef rep<tex_font_metric> rep_tex_font_metric;
 
 tex_font_metric_rep::tex_font_metric_rep (string name)
     : rep_tex_font_metric (name) {
-  header   = NULL;
-  char_info= NULL;
-  width    = NULL;
-  height   = NULL;
-  depth    = NULL;
-  italic   = NULL;
-  lig_kern = NULL;
-  kern     = NULL;
-  exten    = NULL;
-  param    = NULL;
+  header   = nullptr;
+  char_info= nullptr;
+  width    = nullptr;
+  height   = nullptr;
+  depth    = nullptr;
+  italic   = nullptr;
+  lig_kern = nullptr;
+  kern     = nullptr;
+  exten    = nullptr;
+  param    = nullptr;
 }
 
 tex_font_metric_rep::~tex_font_metric_rep () {
-  if (header != NULL) tm_delete_array (header);
-  if (char_info != NULL) tm_delete_array (char_info);
-  if (width != NULL) tm_delete_array (width);
-  if (height != NULL) tm_delete_array (height);
-  if (depth != NULL) tm_delete_array (depth);
-  if (italic != NULL) tm_delete_array (italic);
-  if (lig_kern != NULL) tm_delete_array (lig_kern);
-  if (kern != NULL) tm_delete_array (kern);
-  if (exten != NULL) tm_delete_array (exten);
-  if (param != NULL) tm_delete_array (param);
+  if (header != nullptr) tm_delete_array (header);
+  if (char_info != nullptr) tm_delete_array (char_info);
+  if (width != nullptr) tm_delete_array (width);
+  if (height != nullptr) tm_delete_array (height);
+  if (depth != nullptr) tm_delete_array (depth);
+  if (italic != nullptr) tm_delete_array (italic);
+  if (lig_kern != nullptr) tm_delete_array (lig_kern);
+  if (kern != nullptr) tm_delete_array (kern);
+  if (exten != nullptr) tm_delete_array (exten);
+  if (param != nullptr) tm_delete_array (param);
 }
 
 /******************************************************************************

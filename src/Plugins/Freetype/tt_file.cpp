@@ -117,7 +117,7 @@ tt_font_search_path () {
 #ifdef _FONTCONFIG_H_
     FcConfig*  config  = FcInitLoadConfig ();
     FcStrList* fontdirs= FcConfigGetFontDirs (config);
-    FcChar8*   fontdir = NULL;
+    FcChar8*   fontdir = nullptr;
 
     FcStrListFirst (fontdirs);
     while (fontdir= FcStrListNext (fontdirs)) {

@@ -442,7 +442,7 @@ edit_interface_rep::update_focus_loci () {
  * drag and double click detection for left button
  ******************************************************************************/
 
-static void*  left_handle       = NULL;
+static void*  left_handle       = nullptr;
 static bool   left_started      = false;
 static bool   left_dragging     = false;
 static SI     left_x            = 0;
@@ -502,7 +502,7 @@ detect_left_drag (void* handle, string type, SI x, SI y, time_t t, int m,
  * drag and double click detection for right button
  ******************************************************************************/
 
-static void*  right_handle  = NULL;
+static void*  right_handle  = nullptr;
 static bool   right_started = false;
 static bool   right_dragging= false;
 static SI     right_x       = 0;

@@ -21,7 +21,7 @@
 #include "MacOS/mac_utilities.h"
 #endif
 
-static socket_server* the_server= NULL;
+static socket_server* the_server= nullptr;
 // int socket_link::id= 0;
 
 /******************************************************************************
@@ -30,7 +30,7 @@ static socket_server* the_server= NULL;
 
 void
 server_start () {
-  if (the_server == NULL) {
+  if (the_server == nullptr) {
     (void) eval ("(use-modules (server server-base))");
     (void) eval ("(use-modules (server server-tmfs))");
     (void) eval ("(use-modules (server server-menu))");
@@ -48,15 +48,15 @@ server_stop () {
 #if defined(OS_MACOS)
   mac_end_server ();
 #endif
-  if (the_server != NULL) {
+  if (the_server != nullptr) {
     tm_delete (the_server);
-    the_server= NULL;
+    the_server= nullptr;
   }
 }
 
 bool
 server_started () {
-  return (the_server != NULL && the_server->alive ());
+  return (the_server != nullptr && the_server->alive ());
 }
 
 string
@@ -79,7 +79,7 @@ number_of_servers () {
 
 #else
 
-static socket_server_rep* the_server= NULL;
+static socket_server_rep* the_server= nullptr;
 
 /******************************************************************************
  * Server side
@@ -87,7 +87,7 @@ static socket_server_rep* the_server= NULL;
 
 void
 server_start () {
-  if (the_server == NULL) {
+  if (the_server == nullptr) {
     (void) eval ("(use-modules (server server-base))");
     (void) eval ("(use-modules (server server-tmfs))");
     (void) eval ("(use-modules (server server-menu))");
@@ -100,15 +100,15 @@ server_start () {
 
 void
 server_stop () {
-  if (the_server != NULL) {
+  if (the_server != nullptr) {
     tm_delete (the_server);
-    the_server= NULL;
+    the_server= nullptr;
   }
 }
 
 bool
 server_started () {
-  return the_server != NULL;
+  return the_server != nullptr;
 }
 
 string

@@ -232,7 +232,7 @@ qt_renderer_rep::set_pencil (pencil np) {
     brush   br= np->get_brush ();
     QImage* pm= get_pattern_image (br, pixel);
 
-    if (pm != NULL) {
+    if (pm != nullptr) {
       QBrush brush_for_pen;
       int    pattern_alpha= br->get_alpha ();
       if (pattern_alpha < 255) {
@@ -275,7 +275,7 @@ qt_renderer_rep::set_brush (brush br) {
   if (br->get_type () == brush_pattern) {
     QImage* pm           = get_pattern_image (br, pixel);
     int     pattern_alpha= br->get_alpha ();
-    if (pm != NULL) {
+    if (pm != nullptr) {
       QBrush b;
       if (pattern_alpha < 255) {
         QPixmap pixmap= QPixmap::fromImage (*pm);
@@ -573,7 +573,7 @@ qt_renderer_rep::draw_bis (int c, font_glyphs fng, SI x, SI y) {
     int      pattern_alpha= br->get_alpha ();
     QPainter glim (im);
     glim.setOpacity (qreal (pattern_alpha) / qreal (255));
-    if (pm != NULL) {
+    if (pm != nullptr) {
       SI tx= x - xo * std_shrinkf, ty= y + yo * std_shrinkf;
       decode (tx, ty);
       ty--;
@@ -709,8 +709,8 @@ qt_renderer_rep::draw (const QFont& qfn, const QString& qs, SI x, SI y,
 
 qt_renderer_rep*
 the_qt_renderer () {
-  static QPainter*        the_painter = NULL;
-  static qt_renderer_rep* the_renderer= NULL;
+  static QPainter*        the_painter = nullptr;
+  static qt_renderer_rep* the_renderer= nullptr;
   if (!the_renderer) {
     the_painter = new QPainter ();
     the_renderer= tm_new<qt_renderer_rep> (the_painter);
@@ -753,31 +753,31 @@ void
 qt_renderer_rep::new_shadow (renderer& ren) {
   SI mw, mh, sw, sh;
   get_extents (mw, mh);
-  if (ren != NULL) {
+  if (ren != nullptr) {
     ren->get_extents (sw, sh);
     if (sw != mw || sh != mh) {
       delete_shadow (ren);
-      ren= NULL;
+      ren= nullptr;
     }
     // cout << "Old: " << sw << ", " << sh << "\n";
   }
-  if (ren == NULL) ren= (renderer) tm_new<qt_proxy_renderer_rep> (this);
+  if (ren == nullptr) ren= (renderer) tm_new<qt_proxy_renderer_rep> (this);
 
   // cout << "Create " << mw << ", " << mh << "\n";
 }
 
 void
 qt_renderer_rep::delete_shadow (renderer& ren) {
-  if (ren != NULL) {
+  if (ren != nullptr) {
     tm_delete (ren);
-    ren= NULL;
+    ren= nullptr;
   }
 }
 
 void
 qt_renderer_rep::get_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   // FIXME: we should use the routine fetch later
-  ASSERT (ren != NULL, "invalid renderer");
+  ASSERT (ren != nullptr, "invalid renderer");
   if (ren->is_printer ()) return;
   qt_renderer_rep* shadow= static_cast<qt_renderer_rep*> (ren);
   outer_round (x1, y1, x2, y2);
@@ -812,7 +812,7 @@ qt_renderer_rep::get_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
 void
 qt_renderer_rep::put_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   // FIXME: we should use the routine fetch later
-  ASSERT (ren != NULL, "invalid renderer");
+  ASSERT (ren != nullptr, "invalid renderer");
   if (ren->is_printer ()) return;
   if (painter == static_cast<qt_renderer_rep*> (ren)->painter) return;
   qt_shadow_renderer_rep* shadow= static_cast<qt_shadow_renderer_rep*> (ren);
@@ -837,7 +837,7 @@ qt_renderer_rep::put_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
 
 void
 qt_renderer_rep::apply_shadow (SI x1, SI y1, SI x2, SI y2) {
-  if (master == NULL) return;
+  if (master == nullptr) return;
   if (painter == static_cast<qt_renderer_rep*> (master)->painter) return;
   outer_round (x1, y1, x2, y2);
   decode (x1, y1);
@@ -855,16 +855,16 @@ void
 qt_proxy_renderer_rep::new_shadow (renderer& ren) {
   SI mw, mh, sw, sh;
   get_extents (mw, mh);
-  if (ren != NULL) {
+  if (ren != nullptr) {
     ren->get_extents (sw, sh);
     if (sw != mw || sh != mh) {
       delete_shadow (ren);
-      ren= NULL;
+      ren= nullptr;
     }
     else static_cast<qt_shadow_renderer_rep*> (ren)->end ();
     // cout << "Old: " << sw << ", " << sh << "\n";
   }
-  if (ren == NULL)
+  if (ren == nullptr)
     ren= (renderer) tm_new<qt_shadow_renderer_rep> (QTMPixmapOrImage (mw, mh));
   // cout << "Create " << mw << ", " << mh << "\n";
   static_cast<qt_shadow_renderer_rep*> (ren)->begin (
@@ -874,7 +874,7 @@ qt_proxy_renderer_rep::new_shadow (renderer& ren) {
 void
 qt_proxy_renderer_rep::get_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   // FIXME: we should use the routine fetch later
-  ASSERT (ren != NULL, "invalid renderer");
+  ASSERT (ren != nullptr, "invalid renderer");
   if (ren->is_printer ()) return;
   qt_renderer_rep* shadow= static_cast<qt_renderer_rep*> (ren);
   outer_round (x1, y1, x2, y2);
@@ -928,13 +928,13 @@ qt_shadow_renderer_rep::qt_shadow_renderer_rep (QTMPixmapOrImage _px)
 qt_shadow_renderer_rep::~qt_shadow_renderer_rep () {
   painter->end ();
   delete painter;
-  painter= NULL;
+  painter= nullptr;
 }
 
 void
 qt_shadow_renderer_rep::get_shadow (renderer ren, SI x1, SI y1, SI x2, SI y2) {
   // FIXME: we should use the routine fetch later
-  ASSERT (ren != NULL, "invalid renderer");
+  ASSERT (ren != nullptr, "invalid renderer");
   if (ren->is_printer ()) return;
   qt_shadow_renderer_rep* shadow= static_cast<qt_shadow_renderer_rep*> (ren);
   outer_round (x1, y1, x2, y2);

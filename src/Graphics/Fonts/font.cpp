@@ -48,7 +48,7 @@ font_rep::font_rep (string s)
     : rep<font> (s), type (FONT_TYPE_TEX), math_type (get_math_type (s)),
       size_int (0), design_size (0), display_size (0), size_float (0.0),
       slope (0.0), spc (0), extra (0), mspc (0), sep (0), last_zoom (0.0),
-      zoomed_fn (NULL), global_lsub_correct (0), global_lsup_correct (0),
+      zoomed_fn (nullptr), global_lsub_correct (0), global_lsup_correct (0),
       global_rsub_correct (0), global_rsup_correct (0), lsub_correct (0.0),
       lsup_correct (0.0), rsub_correct (0.0), rsup_correct (0.0),
       above_correct (0.0), below_correct (0.0), protrusion_maps (-1) {
@@ -65,7 +65,7 @@ font_rep::font_rep (string s, font fn)
       size_int (fn->size_int), design_size (fn->design_size),
       display_size (fn->display_size), size_float (fn->size_float),
       slope (fn->slope), spc (fn->spc), extra (fn->extra), mspc (fn->mspc),
-      sep (fn->sep), last_zoom (0.0), zoomed_fn (NULL), global_lsub_correct (0),
+      sep (fn->sep), last_zoom (0.0), zoomed_fn (nullptr), global_lsub_correct (0),
       global_lsup_correct (0), global_rsub_correct (0), global_rsup_correct (0),
       lsub_correct (0.0), lsup_correct (0.0), rsub_correct (0.0),
       rsup_correct (0.0), protrusion_maps (-1) {

@@ -28,7 +28,7 @@ qt_zoom (int sz) {
 
 QStyle*
 qtmstyle () {
-  static QStyle* qtmstyle= NULL;
+  static QStyle* qtmstyle= nullptr;
   if (!qtmstyle) qtmstyle= new QTMStyle (qApp->style ());
   return qtmstyle;
 }

@@ -140,7 +140,7 @@ execute_shell (string s) {
   argv[0]= const_cast<char*> ("sh");
   argv[1]= const_cast<char*> ("-c");
   argv[2]= _s;
-  argv[3]= NULL;
+  argv[3]= nullptr;
   execve ("/bin/sh", argv, environ);
 }
 #endif
@@ -183,8 +183,8 @@ pipe_link_rep::start () {
     close (pp_err[OUT]);
 
     alive= true;
-    snout= socket_notifier (out, &pipe_callback, this, NULL);
-    snerr= socket_notifier (err, &pipe_callback, this, NULL);
+    snout= socket_notifier (out, &pipe_callback, this, nullptr);
+    snerr= socket_notifier (err, &pipe_callback, this, nullptr);
     add_notifier (snout);
     add_notifier (snerr);
 
@@ -199,7 +199,7 @@ pipe_link_rep::start () {
         sleep (2);
         killpg (pid, SIGKILL);
       }
-      wait (NULL);
+      wait (nullptr);
       if (r == -1) return "Error: the application does not reply";
       else
         return "Error: the application did not send its usual startup banner";
@@ -249,7 +249,7 @@ pipe_link_rep::feed (int channel) {
   else r= ::read (err, tempout, 1024);
   if (r == -1) {
     io_error << "Read failed for '" << cmd << "'\n";
-    wait (NULL);
+    wait (nullptr);
   }
   else if (r == 0) {
     if (-1 != killpg (pid, SIGTERM)) {
@@ -304,7 +304,7 @@ pipe_link_rep::listen (int msecs) {
     struct timeval tv;
     tv.tv_sec = msecs / 1000;
     tv.tv_usec= 1000 * (msecs % 1000);
-    int nr    = select (max (out, err) + 1, &rfds, NULL, NULL, &tv);
+    int nr    = select (max (out, err) + 1, &rfds, nullptr, nullptr, &tv);
     if (nr != 0 && FD_ISSET (out, &rfds)) feed (LINK_OUT);
     if (nr != 0 && FD_ISSET (err, &rfds)) feed (LINK_ERR);
     if (texmacs_time () - wait_until > 0) break;
@@ -330,7 +330,7 @@ pipe_link_rep::stop () {
   alive= false;
   close (in);
   alive= false;
-  wait (NULL);
+  wait (nullptr);
 
   remove_notifier (snout);
   remove_notifier (snerr);
@@ -358,7 +358,7 @@ pipe_callback (void* obj, void* info) {
     struct timeval tv;
     tv.tv_sec = 0;
     tv.tv_usec= 0;
-    select (max_fd, &rfds, NULL, NULL, &tv);
+    select (max_fd, &rfds, nullptr, nullptr, &tv);
 
     busy= false;
     if (con->alive && FD_ISSET (con->out, &rfds)) {

@@ -49,11 +49,11 @@ struct style_data_rep {
         drd_void ("void"), style_cached (style_void), drd_cached (drd_void) {}
 };
 
-static style_data_rep* sd= NULL;
+static style_data_rep* sd= nullptr;
 
 static void
 init_style_data () {
-  if (sd == NULL) sd= tm_new<style_data_rep> ();
+  if (sd == nullptr) sd= tm_new<style_data_rep> ();
 }
 
 extern hashmap<string, tree> style_tree_cache;
@@ -176,9 +176,9 @@ void
 style_invalidate_cache () {
   style_tree_cache= hashmap<string, tree> ();
   hidden_packages = hashmap<string, bool> (false);
-  if (sd != NULL) {
+  if (sd != nullptr) {
     tm_delete<style_data_rep> (sd);
-    sd= NULL;
+    sd= nullptr;
   }
   init_style_data ();
   remove (get_tm_cache_path () * url_wildcard ("__*"));

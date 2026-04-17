@@ -309,7 +309,7 @@ pdf_hummus_renderer_rep::pdf_hummus_renderer_rep (
       nr_pages (nr_pages2), page_type (page_type2), landscape (landscape2),
       paper_w (paper_w2), paper_h (paper_h2), page_num (0), inText (false),
       fg (-1), bg (-1), lw (-1), pen (black), bgb (white), fgb (black),
-      cfn (""), cfid (NULL), native_fonts (NULL), t3font_registry_id (-1),
+      cfn (""), cfid (nullptr), native_fonts (nullptr), t3font_registry_id (-1),
       destId (0), label_count (0), outlineId (0) {
   width = default_dpi * paper_w / 2.54;
   height= default_dpi * paper_h / 2.54;
@@ -450,7 +450,7 @@ pdf_hummus_renderer_rep::begin_page () {
   page= new PDFPage ();
   page->SetMediaBox (PDFRectangle (0, 0, width, height));
   contentContext= pdfWriter.StartPageContentContext (page);
-  if (NULL == contentContext) {
+  if (nullptr == contentContext) {
     // status = PDFHummus::eFailure;
     convert_error << "Failed to create content context for page\n";
   }
@@ -459,7 +459,7 @@ pdf_hummus_renderer_rep::begin_page () {
     bg        = -1;
     lw        = -1;
     cfn       = "";
-    cfid      = NULL;
+    cfid      = nullptr;
     inText    = false;
     clip_level= 0;
 
@@ -670,7 +670,7 @@ pdf_hummus_renderer_rep::register_pattern_image (brush br, SI pixel) {
   else {
     // debug_convert << "Insert pattern image\n";
     QImage* pim= get_image (u, w, h, eff, pixel);
-    if (pim == NULL) {
+    if (pim == nullptr) {
       convert_error << "Cannot read image file '" << u << "'"
                     << " with get_image" << LF;
       return;
@@ -767,7 +767,7 @@ pdf_hummus_renderer_rep::select_stroke_pattern (brush br) {
   std::string patternName=
       page->GetResourcesDictionary ().AddPatternMapping (p->id);
   contentContext->CS ("Pattern");
-  contentContext->SCN ((double*) NULL, 0, patternName);
+  contentContext->SCN ((double*) nullptr, 0, patternName);
 }
 
 void
@@ -784,7 +784,7 @@ pdf_hummus_renderer_rep::select_fill_pattern (brush br) {
   std::string patternName=
       page->GetResourcesDictionary ().AddPatternMapping (p->id);
   contentContext->cs ("Pattern");
-  contentContext->scn ((double*) NULL, 0, patternName);
+  contentContext->scn ((double*) nullptr, 0, patternName);
   select_alpha ((1000 * br->get_alpha ()) / 255);
 }
 
@@ -1007,7 +1007,7 @@ t3font_rep::write_char (glyph gl, ObjectIDType inCharID) {
 
   objectsContext.StartNewIndirectObject (inCharID);
   // write char stream
-  PDFStream* charStream= objectsContext.StartPDFStream (NULL, true);
+  PDFStream* charStream= objectsContext.StartPDFStream (nullptr, true);
   string     data;
   if (is_nil (gl)) {
     // write d0 command
@@ -1164,7 +1164,7 @@ t3font_rep::write_definition (int& registry_id) {
   cmap << "endcmap CMapName currentdict /CMap defineresource\r\n"
        << "pop end end\r\n";
   objectsContext.StartNewIndirectObject (tounicodeId);
-  PDFStream*           cmapStream= objectsContext.StartPDFStream (NULL, true);
+  PDFStream*           cmapStream= objectsContext.StartPDFStream (nullptr, true);
   OutputStreamTraits   outputTraits (cmapStream->GetWriteStream ());
   c_string             buf (cmap);
   InputByteArrayStream reader ((IOBasicTypes::Byte*) (char*) buf, N (cmap));
@@ -1233,7 +1233,7 @@ pdf_hummus_renderer_rep::make_pdf_font (string fontname) {
       font= pdfWriter.GetFontForFile ((char*) _u, face_index);
     }
 
-    if (font != NULL && no_font_issues (u)) {
+    if (font != nullptr && no_font_issues (u)) {
       native_fonts (fontname)= font;
       std::string _ps_name   = font->GetFreeTypeFont ()->GetPostscriptName ();
       string      ps_name (_ps_name.c_str ());
@@ -1389,7 +1389,7 @@ pdf_hummus_renderer_rep::draw (int ch, font_glyphs fn, SI x, SI y) {
       contentContext->Tf (cfid, fsize);
     }
     else {
-      cfid            = NULL;
+      cfid            = nullptr;
       std::string name= page->GetResourcesDictionary ().AddFontMapping (
           t3font_list (fontname)->fontId);
       // pk fonts are encoded in t3 fonts as bitmaps.
@@ -1408,14 +1408,14 @@ pdf_hummus_renderer_rep::draw (int ch, font_glyphs fn, SI x, SI y) {
   prev_text_y= to_y (y);
   // debug_convert << "char " << ch << "index " << gl->index
   //               << " " << x << " " << y << " font " << cfn  << LF;
-  if (cfid == NULL) t3font_list (cfn)->add_glyph (ch);
+  if (cfid == nullptr) t3font_list (cfn)->add_glyph (ch);
   GlyphUnicodeMappingList glyphs;
-  if (cfid != NULL && EuropeanComputerModern_fonts->contains (cfn) &&
+  if (cfid != nullptr && EuropeanComputerModern_fonts->contains (cfn) &&
       gl->index >= 27 && gl->index <= 31) {
     ch+= 0xfb00 - 27;
   }
   int gl_index;
-  if (cfid != NULL) gl_index= gl->index;
+  if (cfid != nullptr) gl_index= gl->index;
   else
     gl_index= t3font_get_local_glyph (ch, t3font_list (cfn)->font_chunk,
                                       t3font_list (cfn)->fn->res_name);
@@ -1430,7 +1430,7 @@ pdf_hummus_renderer_rep::draw (int ch, font_glyphs fn, SI x, SI y) {
     if (ch == 0xfb02) contentContext->WriteFreeCode (ligature_fl);
     if (ch == 0xfb03) contentContext->WriteFreeCode (ligature_ffi);
     if (ch == 0xfb04) contentContext->WriteFreeCode (ligature_ffl);
-    if (cfid != NULL) {
+    if (cfid != nullptr) {
       glyphs.push_back (GlyphUnicodeMapping (gl_index, ch));
       contentContext->Tj (glyphs);
     }
@@ -1442,7 +1442,7 @@ pdf_hummus_renderer_rep::draw (int ch, font_glyphs fn, SI x, SI y) {
     contentContext->WriteFreeCode (" EMC\r\n");
   }
   else {
-    if (cfid != NULL) {
+    if (cfid != nullptr) {
       glyphs.push_back (GlyphUnicodeMapping (gl_index, ch));
       contentContext->Tj (glyphs);
     }

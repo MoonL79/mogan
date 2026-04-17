@@ -61,8 +61,8 @@ tt_font_rep::tt_font_rep (string name, string family2, double size2, int hdpi2,
   fnm= tt_font_metric (family, size2, std_dpi, (std_dpi * vdpi) / hdpi);
   fng= tt_font_glyphs (family, size2, hdpi, vdpi);
   if (fnm->bad_font_metric || fng->bad_font_glyphs) {
-    fnm= std_font_metric (res_name, NULL, 0, -1);
-    fng= std_font_glyphs (res_name, NULL, 0, -1);
+    fnm= std_font_metric (res_name, nullptr, 0, -1);
+    fng= std_font_glyphs (res_name, nullptr, 0, -1);
     if (DEBUG_AUTO)
       debug_fonts << "Font " << family << " " << size2 << "pt "
                   << "at " << hdpi << " dpi could not be loaded\n";

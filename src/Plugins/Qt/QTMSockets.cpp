@@ -78,7 +78,7 @@ string_from_socket_address (SOCKADDR_STORAGE* sock) {
     return wsoc::inet_ntoa (((SOCKADDR_IN*) sock)->sin_addr);
 #else
     if (inet_ntop (AF_INET, &(((sockaddr_in*) sock)->sin_addr), tmp,
-                   sizeof (tmp)) == NULL)
+                   sizeof (tmp)) == nullptr)
       return "";
     return tmp;
 #endif
@@ -86,7 +86,7 @@ string_from_socket_address (SOCKADDR_STORAGE* sock) {
   if (sock->ss_family == AF_INET6) {
 #if !defined(OS_MINGW) && !defined(OS_WIN) || (_WIN32_WINNT >= 0x0600)
     if (INET_NTOP (AF_INET6, &(((SOCKADDR_IN6*) sock)->sin6_addr), tmp,
-                   sizeof (tmp)) == NULL)
+                   sizeof (tmp)) == nullptr)
       return "";
 #else
     return "";
@@ -120,8 +120,8 @@ socket_basic::~socket_basic () {
 socket_link::socket_link (int s, SOCKADDR_STORAGE* addr) {
   id++;
   sock= s;
-  qsnr= NULL;
-  qsnw= NULL;
+  qsnr= nullptr;
+  qsnw= nullptr;
   if (st != ST_VOID) return;
   memcpy (&add, addr, sizeof (add));
   qsnr= tm_new<QSocketNotifier> (s, QSocketNotifier::Read);
@@ -141,8 +141,8 @@ socket_link::socket_link (int s, SOCKADDR_STORAGE* addr) {
 
 socket_link::socket_link (string host, unsigned short port) {
   ++id;
-  qsnr= NULL;
-  qsnw= NULL;
+  qsnr= nullptr;
+  qsnw= nullptr;
   if (st != ST_VOID) return;
   string host_tmp= host;
   if (starts (host, "[") && ends (host, "]")) host_tmp= host (1, N (host) - 1);
@@ -155,22 +155,22 @@ socket_link::socket_link (string host, unsigned short port) {
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags    = AI_PASSIVE;
   hints.ai_protocol = 0;
-  hints.ai_canonname= NULL;
-  hints.ai_addr     = NULL;
-  hints.ai_next     = NULL;
+  hints.ai_canonname= nullptr;
+  hints.ai_addr     = nullptr;
+  hints.ai_next     = nullptr;
   int x             = GETADDRINFO (_host, _port, &hints, &result);
   if (x != 0) {
     err= ERRNO;
     st = ST_GETHOST;
     return;
   };
-  for (rp= result; rp != NULL; rp= rp->ai_next) {
+  for (rp= result; rp != nullptr; rp= rp->ai_next) {
     sock= SOCKET (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
     if (sock < 0) continue;
     if (CONNECT (sock, rp->ai_addr, rp->ai_addrlen) != -1) break;
     CLOSE (sock);
   }
-  if (rp == NULL) {
+  if (rp == nullptr) {
     err= ERRNO;
     st = ST_CONNECTION;
     return;
@@ -367,7 +367,7 @@ socket_link::listen (int msecs) {
   struct timeval tv;
   tv.tv_sec = msecs / 1000;
   tv.tv_usec= 1000 * (msecs % 1000);
-  int nr    = select (sock + 1, &rfds, NULL, NULL, &tv);
+  int nr    = select (sock + 1, &rfds, nullptr, nullptr, &tv);
   if (nr == 1) data_set_ready (sock);
   DBG_IO ("Listenning result: " << nr);
   if (nr == -1) stop ();
@@ -391,10 +391,10 @@ socket_server::socket_server (string host, unsigned short port) {
   hints.ai_socktype = SOCK_STREAM;
   hints.ai_flags    = AI_PASSIVE;
   hints.ai_protocol = 0;
-  hints.ai_canonname= NULL;
-  hints.ai_addr     = NULL;
-  hints.ai_next     = NULL;
-  int x= GETADDRINFO (host == "" ? (char*) NULL : (char*) _host, _port, &hints,
+  hints.ai_canonname= nullptr;
+  hints.ai_addr     = nullptr;
+  hints.ai_next     = nullptr;
+  int x= GETADDRINFO (host == "" ? (char*) nullptr : (char*) _host, _port, &hints,
                       &result);
   if (x != 0) {
     DBG_IO (GAI_STRERROR (x));
@@ -403,7 +403,7 @@ socket_server::socket_server (string host, unsigned short port) {
     return;
   }
   sock= -1;
-  for (rp= result; rp != NULL; rp= rp->ai_next) {
+  for (rp= result; rp != nullptr; rp= rp->ai_next) {
     DBG_IO ("Serving at " *
             string_from_socket_address ((SOCKADDR_STORAGE*) rp->ai_addr));
     sock= SOCKET (rp->ai_family, rp->ai_socktype, rp->ai_protocol);
@@ -511,7 +511,7 @@ socket_server::find_client (int id) {
     ids << clt->getid ();
   }
   DBG_IO ("Client not found, id= " << id << ", among= " << ids);
-  return NULL;
+  return nullptr;
 }
 
 socket_server::~socket_server () {

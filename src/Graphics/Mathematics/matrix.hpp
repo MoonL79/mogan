@@ -38,7 +38,7 @@ public:
   inline matrix_rep (T* a2, int rows2, int cols2)
       : rows (rows2), cols (cols2), a (a2) {}
   inline ~matrix_rep () {
-    if (a != NULL) tm_delete_array (a);
+    if (a != nullptr) tm_delete_array (a);
   }
   friend class matrix<T>;
   friend int NR LESSGTR (matrix<T> m);
@@ -52,12 +52,12 @@ TMPL class matrix {
       : rep (tm_new<matrix_rep<T>> (a, rows, cols)) {}
   inline matrix (T c, int rows, int cols) {
     int i, n= rows * cols;
-    T*  a= (n == 0 ? (T*) NULL : tm_new_array<T> (n));
+    T*  a= (n == 0 ? (T*) nullptr : tm_new_array<T> (n));
     for (i= 0; i < n; i++)
       a[i]= ((i % (cols + 1)) == 0 ? c : T (0));
     rep= tm_new<matrix_rep<T>> (a, rows, cols);
   }
-  inline matrix () { rep= tm_new<matrix_rep<T>> ((T*) NULL, 0, 0); }
+  inline matrix () { rep= tm_new<matrix_rep<T>> ((T*) nullptr, 0, 0); }
   inline T& operator() (int i, int j) { return rep->a[i * rep->cols + j]; }
 };
 CONCRETE_TEMPLATE_CODE (matrix, typename, T);

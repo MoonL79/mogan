@@ -33,7 +33,7 @@ TMPL class vector_rep : concrete_struct {
 public:
   inline vector_rep (T* a2, int n2) : n (n2), a (a2) {}
   inline ~vector_rep () {
-    if (a != NULL) tm_delete_array (a);
+    if (a != nullptr) tm_delete_array (a);
   }
   friend class vector<T>;
   friend int N LESSGTR (vector<T> a);
@@ -44,12 +44,12 @@ TMPL class vector {
   CONCRETE_TEMPLATE (vector, T);
   inline vector (T* a, int n) : rep (tm_new<vector_rep<T>> (a, n)) {}
   inline vector (T c, int n) {
-    T* a= (n == 0 ? (T*) NULL : tm_new_array<T> (n));
+    T* a= (n == 0 ? (T*) nullptr : tm_new_array<T> (n));
     for (int i= 0; i < n; i++)
       a[i]= c;
     rep= tm_new<vector_rep<T>> (a, n);
   }
-  inline vector () { rep= tm_new<vector_rep<T>> ((T*) NULL, 0); }
+  inline vector () { rep= tm_new<vector_rep<T>> ((T*) nullptr, 0); }
   inline vector (T c1) {
     T* a= tm_new_array<T> (1);
     a[0]= c1;

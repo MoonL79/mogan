@@ -28,7 +28,7 @@ static const double MUPDF_PDF_SCALE= 4.0;
  ******************************************************************************/
 
 mupdf_picture_rep::mupdf_picture_rep (fz_pixmap* _pix, int ox2, int oy2)
-    : pix (_pix), im (NULL), w (fz_pixmap_width (mupdf_context (), pix)),
+    : pix (_pix), im (nullptr), w (fz_pixmap_width (mupdf_context (), pix)),
       h (fz_pixmap_height (mupdf_context (), pix)), ox (ox2), oy (oy2) {
   fz_keep_pixmap (mupdf_context (), pix);
 }
@@ -78,7 +78,7 @@ mupdf_picture_rep::set_origin (int ox2, int oy2) {
 color
 mupdf_picture_rep::internal_get_pixel (int x, int y) {
   // 防御性检查：避免空指针或越界坐标导致非法访问。
-  if (pix == NULL) return 0;
+  if (pix == nullptr) return 0;
   if (x < 0 || y < 0 || x >= w || y >= h) return 0;
 
   fz_context*    ctx    = mupdf_context ();
@@ -86,7 +86,7 @@ mupdf_picture_rep::internal_get_pixel (int x, int y) {
   int            n      = pix->n;
   bool           alpha  = pix->alpha;
   int            stride = pix->stride;
-  if (samples == NULL || stride <= 0) return 0;
+  if (samples == nullptr || stride <= 0) return 0;
   if (n <= 0) {
     static bool warned_n_le0_get= false;
     if (!warned_n_le0_get) {
@@ -136,7 +136,7 @@ mupdf_picture_rep::internal_get_pixel (int x, int y) {
 void
 mupdf_picture_rep::internal_set_pixel (int x, int y, color c) {
   // 防御性检查：避免空指针或越界坐标导致非法写入。
-  if (pix == NULL) return;
+  if (pix == nullptr) return;
   if (x < 0 || y < 0 || x >= w || y >= h) return;
 
   fz_context*    ctx    = mupdf_context ();
@@ -144,7 +144,7 @@ mupdf_picture_rep::internal_set_pixel (int x, int y, color c) {
   int            n      = pix->n;
   bool           alpha  = pix->alpha;
   int            stride = pix->stride;
-  if (samples == NULL || stride <= 0) return;
+  if (samples == nullptr || stride <= 0) return;
   if (n <= 0) {
     static bool warned_n_le0_set= false;
     if (!warned_n_le0_set) {
@@ -203,7 +203,7 @@ as_mupdf_picture (picture pic) {
   if (pic->get_type () == picture_native) return pic;
   fz_pixmap* pix=
       fz_new_pixmap (mupdf_context (), fz_device_rgb (mupdf_context ()),
-                     pic->get_width (), pic->get_height (), NULL, 1);
+                     pic->get_width (), pic->get_height (), nullptr, 1);
   picture ret= mupdf_picture (pix, pic->get_origin_x (), pic->get_origin_y ());
   fz_drop_pixmap (mupdf_context (), pix);
   ret->copy_from (pic); // FIXME: is this inefficient???
@@ -219,7 +219,7 @@ as_native_picture (picture pict) {
 picture
 native_picture (int w, int h, int ox, int oy) {
   fz_pixmap* pix= fz_new_pixmap (
-      mupdf_context (), fz_device_rgb (mupdf_context ()), w, h, NULL, 1);
+      mupdf_context (), fz_device_rgb (mupdf_context ()), w, h, nullptr, 1);
   fz_clear_pixmap_with_value (mupdf_context (), pix, 255); // white background
   picture p= mupdf_picture (pix, ox, oy);
   fz_drop_pixmap (mupdf_context (), pix);
@@ -288,10 +288,10 @@ picture_renderer (picture p, double zoomf) {
 fz_pixmap*
 mupdf_load_pdf_image (fz_buffer* pdf_data, fz_matrix scale) {
   fz_context*   ctx   = mupdf_context ();
-  pdf_document* doc   = NULL;
-  pdf_page*     page  = NULL;
-  fz_pixmap*    pix   = NULL;
-  fz_stream*    stream= NULL;
+  pdf_document* doc   = nullptr;
+  pdf_page*     page  = nullptr;
+  fz_pixmap*    pix   = nullptr;
+  fz_stream*    stream= nullptr;
   fz_try (ctx) {
     stream        = fz_open_buffer (ctx, pdf_data);
     doc           = pdf_open_document_with_stream (ctx, stream);
@@ -312,24 +312,24 @@ mupdf_load_pdf_image (fz_buffer* pdf_data, fz_matrix scale) {
 fz_image*
 mupdf_load_image (url u) {
   fz_context* ctx   = mupdf_context ();
-  fz_image*   im    = NULL;
+  fz_image*   im    = nullptr;
   fz_buffer*  buffer= mupdf_read_from_url (u);
-  if (buffer == NULL) {
-    return NULL;
+  if (buffer == nullptr) {
+    return nullptr;
   }
   string    suf= suffix (u);
   fz_matrix ctm= fz_scale (MUPDF_PDF_SCALE, MUPDF_PDF_SCALE);
   if (suf == "svg") {
-    fz_xml_doc* xml_doc= NULL;
-    fz_xml*     xml    = NULL;
-    fz_image*   tmp_im = NULL;
-    fz_pixmap*  tmp_pix= NULL;
+    fz_xml_doc* xml_doc= nullptr;
+    fz_xml*     xml    = nullptr;
+    fz_image*   tmp_im = nullptr;
+    fz_pixmap*  tmp_pix= nullptr;
     fz_try (ctx) {
       xml_doc= fz_parse_xml (ctx, buffer, 0);
       xml    = fz_xml_find (xml_doc, "svg");
-      tmp_im = fz_new_image_from_svg_xml (ctx, xml_doc, xml, NULL, NULL);
-      tmp_pix= fz_get_pixmap_from_image (ctx, tmp_im, NULL, &ctm, NULL, NULL);
-      im     = fz_new_image_from_pixmap (ctx, tmp_pix, NULL);
+      tmp_im = fz_new_image_from_svg_xml (ctx, xml_doc, xml, nullptr, nullptr);
+      tmp_pix= fz_get_pixmap_from_image (ctx, tmp_im, nullptr, &ctm, nullptr, nullptr);
+      im     = fz_new_image_from_pixmap (ctx, tmp_pix, nullptr);
     }
     fz_catch (ctx) { fz_report_error (ctx); }
     fz_drop_xml (ctx, xml);
@@ -354,12 +354,12 @@ mupdf_load_image (url u) {
     // ok, try to load the xpm finally
     picture    xp = as_mupdf_picture (load_xpm (u));
     fz_pixmap* pix= ((mupdf_picture_rep*) xp->get_handle ())->pix;
-    im            = fz_new_image_from_pixmap (ctx, pix, NULL);
+    im            = fz_new_image_from_pixmap (ctx, pix, nullptr);
   }
   else if (suf == "pdf") {
     fz_pixmap* pix= mupdf_load_pdf_image (buffer, ctm);
-    if (pix != NULL) {
-      im= fz_new_image_from_pixmap (mupdf_context (), pix, NULL);
+    if (pix != nullptr) {
+      im= fz_new_image_from_pixmap (mupdf_context (), pix, nullptr);
       fz_drop_pixmap (mupdf_context (), pix);
     }
   }
@@ -371,8 +371,8 @@ mupdf_load_image (url u) {
       // R,G,B,A
       int          width         = qimage.width ();
       int          height        = qimage.height ();
-      fz_pixmap*   pix           = NULL;
-      const uchar* src_data      = NULL;
+      fz_pixmap*   pix           = nullptr;
+      const uchar* src_data      = nullptr;
       int          bytes_per_line= 0;
 
       // 使用 Qt 的预乘 (premultiplied) RGBA 格式，既正确处理
@@ -382,7 +382,7 @@ mupdf_load_image (url u) {
           qimage.convertToFormat (QImage::Format_RGBA8888_Premultiplied);
       src_data      = img.constBits ();
       bytes_per_line= img.bytesPerLine ();
-      pix= fz_new_pixmap (ctx, fz_device_rgb (ctx), width, height, NULL, 1);
+      pix= fz_new_pixmap (ctx, fz_device_rgb (ctx), width, height, nullptr, 1);
       unsigned char* dst_data= fz_pixmap_samples (ctx, pix);
 
       for (int y= 0; y < height; ++y) {
@@ -391,7 +391,7 @@ mupdf_load_image (url u) {
         memcpy (dst_row, src_row, width * 4);
       }
 
-      im= fz_new_image_from_pixmap (ctx, pix, NULL);
+      im= fz_new_image_from_pixmap (ctx, pix, nullptr);
       fz_drop_pixmap (ctx, pix);
 
       if (DEBUG_CONVERT)
@@ -409,7 +409,7 @@ mupdf_load_image (url u) {
     fz_catch (ctx) { fz_report_error (ctx); }
   }
   fz_drop_buffer (ctx, buffer);
-  if (im == NULL) {
+  if (im == nullptr) {
     // attempt to convert to png
     url temp= url_temp (".png");
     image_to_png (u, temp, 0, 0);
@@ -429,14 +429,14 @@ mupdf_load_pixmap (url u, int w, int h, tree eff, SI pixel) {
   fz_image*   im = mupdf_load_image (u);
 
   // Error Handling
-  if (im == NULL) {
-    return NULL;
+  if (im == nullptr) {
+    return nullptr;
   }
 
-  fz_pixmap* pix= fz_get_pixmap_from_image (ctx, im, NULL, NULL, NULL, NULL);
+  fz_pixmap* pix= fz_get_pixmap_from_image (ctx, im, nullptr, nullptr, nullptr, nullptr);
   // Scaling
   if (im->w != w || im->h != h) {
-    fz_pixmap* scaled= fz_scale_pixmap (ctx, pix, 0, 0, w, h, NULL);
+    fz_pixmap* scaled= fz_scale_pixmap (ctx, pix, 0, 0, w, h, nullptr);
     fz_drop_pixmap (ctx, pix);
     pix= scaled;
   }
@@ -483,10 +483,10 @@ format_picsize_string (index_type px, index_type dpi, int& w, int& h,
   h          = dhcm * cm / pt;
 
   bool is_exceed_page= w * pt > par;
-  if (out_wcm_pointer != NULL) {
+  if (out_wcm_pointer != nullptr) {
     *out_wcm_pointer= is_exceed_page ? "0.8par" : as_string (dwcm) * "cm";
   }
-  if (out_hcm_pointer != NULL) {
+  if (out_hcm_pointer != nullptr) {
     *out_hcm_pointer= is_exceed_page ? as_string (0.8 / w * h) * "par"
                                      : as_string (dhcm) * "cm";
   }
@@ -509,14 +509,14 @@ mupdf_normal_image_size (url image, int& w, int& h, string* out_wcm_pointer,
                          string* out_hcm_pointer) {
   if (DEBUG_CONVERT) debug_convert << "mupdf_normal_image_size :" << LF;
   fz_context* ctx= mupdf_context ();
-  fz_image*   im = NULL;
+  fz_image*   im = nullptr;
   fz_buffer*  buf= mupdf_read_from_url (image);
-  if (buf != NULL) {
+  if (buf != nullptr) {
     fz_try (ctx) { im= fz_new_image_from_buffer (ctx, buf); }
     fz_catch (ctx) fz_report_error (ctx);
     fz_drop_buffer (ctx, buf);
   }
-  if (im == NULL) {
+  if (im == nullptr) {
     // Check if it's a WebP file and use Qt to get the size
     string suf= suffix (image);
     if (suf == "webp") {
@@ -561,16 +561,16 @@ mupdf_pdf_image_size (url image, int& w, int& h, string* out_wcm_pointer,
    * pixmap，而是读取页面边界并基于缩放因子计算像素尺寸。 */
   fz_context* ctx    = mupdf_context ();
   fz_buffer*  buf    = mupdf_read_from_url (image);
-  fz_pixmap*  im     = NULL;
+  fz_pixmap*  im     = nullptr;
   bool        success= false;
-  if (buf != NULL) {
+  if (buf != nullptr) {
     /* 先尝试轻量级路径：读取页面边界并使用与渲染一致的缩放因子计算像素尺寸。
       这样在许多情况下无需渲染整页 pixmap（在 HiDPI
       或大页面上会占用大量内存）。*/
     double        scale_factor= MUPDF_PDF_SCALE;
-    fz_stream*    stream      = NULL;
-    pdf_document* doc         = NULL;
-    pdf_page*     page        = NULL;
+    fz_stream*    stream      = nullptr;
+    pdf_document* doc         = nullptr;
+    pdf_page*     page        = nullptr;
     fz_rect       bounds;
     bool          bounds_succeeded= false;
 
@@ -610,11 +610,11 @@ mupdf_pdf_image_size (url image, int& w, int& h, string* out_wcm_pointer,
     if (bounds_succeeded) {
       success= true;
     }
-    /* bounds 未成功时，若 catch 路径渲染得到 pixmap（im != NULL）则
+    /* bounds 未成功时，若 catch 路径渲染得到 pixmap（im != nullptr）则
        仍会在下面分支里使用该 pixmap 计算尺寸；否则进入默认错误处理。 */
   }
   if (!success) {
-    if (im == NULL) {
+    if (im == nullptr) {
       /* 无法通过 bounds 或渲染读取到尺寸，返回默认尺寸并表示失败 */
       convert_error << "Cannot read image file '" << image << "'"
                     << " in mupdf_pdf_image_size" << LF;
@@ -639,7 +639,7 @@ string
 mupdf_load_and_parse_image (const char* path, int& w, int& h, string extension,
                             string* out_wcm_pointer, string* out_hcm_pointer) {
   fz_context*    ctx= mupdf_context ();
-  fz_buffer*     buf= NULL;
+  fz_buffer*     buf= nullptr;
   unsigned char* data;
   fz_try (ctx) { buf= fz_read_file (ctx, path); }
   fz_catch (ctx) {
@@ -700,7 +700,7 @@ mupdf_pretty_image_size (url image, string& w, string& h) {
 picture
 load_picture (url u, int w, int h, tree eff, int pixel) {
   fz_pixmap* pix= mupdf_load_pixmap (u, w, h, eff, pixel);
-  if (pix == NULL) return error_picture (w, h);
+  if (pix == nullptr) return error_picture (w, h);
   picture p= mupdf_picture (pix, 0, 0);
   fz_drop_pixmap (mupdf_context (), pix);
   return p;

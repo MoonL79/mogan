@@ -29,7 +29,7 @@ public:
 
 public:
   raster_rep (int w2, int h2, int ox2, int oy2)
-      : w (w2), h (h2), ox (ox2), oy (oy2), a (NULL) {
+      : w (w2), h (h2), ox (ox2), oy (oy2), a (nullptr) {
     if (w * h != 0) a= tm_new_array<C> (w * h);
   }
   ~raster_rep () {

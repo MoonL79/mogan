@@ -15,7 +15,7 @@
 #include "qt_window_widget.hpp"
 
 qt_menu_rep::qt_menu_rep (qt_widget _content)
-    : qt_widget_rep (vertical_menu), qact (NULL), content (_content) {}
+    : qt_widget_rep (vertical_menu), qact (nullptr), content (_content) {}
 
 /*! Destructor. Remember that qt_menu is the only parsed widget which by
  default owns its actions.

@@ -900,7 +900,7 @@ TeXmacs_main (int argc, char** argv) {
     bool   has_initial_file= false;
     bool   first_file      = true;
     for (i= 1; i < argc; i++) {
-      if (argv[i] == NULL) break;
+      if (argv[i] == nullptr) break;
       string s= argv[i];
       if ((N (s) >= 2) && (s (0, 2) == "--")) s= s (1, N (s));
       if ((s[0] != '-') && (s[0] != '+')) {
