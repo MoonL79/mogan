@@ -22,7 +22,9 @@
 
 extern tree the_et;
 
-box::box (box_rep* rep2) : rep (rep2) {}
+box::box (box_rep* rep2) : rep (rep2, [] (box_rep* ptr) { tm_delete (ptr); }) {}
+
+box::box (std::shared_ptr<box_rep> rep2) : rep (std::move (rep2)) {}
 
 /******************************************************************************
  * Default settings for virtual routines
@@ -157,34 +159,38 @@ box
 box_rep::adjust_kerning (int mode, double factor) {
   (void) mode;
   (void) factor;
-  return this;
+  return self ();
 }
 
 box
 box_rep::left_auto_spacing (SI size) {
-  return this;
+  (void) size;
+  return self ();
 };
 
 box
 box_rep::right_auto_spacing (SI size) {
-  return this;
+  (void) size;
+  return self ();
 };
 
 box
 box_rep::left_contract_kerning (double factor) {
-  return this;
+  (void) factor;
+  return self ();
 };
 
 box
 box_rep::right_contract_kerning (double factor) {
-  return this;
+  (void) factor;
+  return self ();
 };
 
 box
 box_rep::expand_glyphs (int mode, double factor) {
   (void) mode;
   (void) factor;
-  return this;
+  return self ();
 }
 
 void
@@ -200,7 +206,7 @@ box_rep::adjust_cell_geometry (SI dx, SI dl, SI dr) {
   (void) dl;
   (void) dr;
   TM_FAILED ("cell box expected");
-  return this;
+  return self ();
 }
 
 /******************************************************************************
@@ -426,7 +432,7 @@ frame
 box_rep::find_frame (path bp, bool last) {
   SI    x= 0;
   SI    y= 0;
-  box   b= this;
+  box   b= self ();
   frame f= get_frame ();
   while (!is_nil (bp)) {
     x+= b->sx (bp->item);
@@ -444,7 +450,7 @@ box_rep::find_frame (path bp, bool last) {
 
 grid
 box_rep::find_grid (path bp) {
-  box  b= this;
+  box  b= self ();
   grid g= get_grid ();
   while (!is_nil (bp)) {
     b      = b->subbox (bp->item);
@@ -457,7 +463,7 @@ box_rep::find_grid (path bp) {
 
 void
 box_rep::find_limits (path bp, point& lim1, point& lim2) {
-  box b= this;
+  box b= self ();
   get_limits (lim1, lim2);
   while (!is_nil (bp)) {
     point slim1, slim2;
@@ -986,6 +992,11 @@ box::operator== (box b2) const {
 bool
 box::operator!= (box b2) const {
   return rep != b2.rep;
+}
+
+box
+box_rep::self () {
+  return box (shared_from_this ());
 }
 
 box::operator tree () { return tree (*rep); }

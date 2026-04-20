@@ -128,6 +128,7 @@ class box {
 public:
   box () = default;
   box (box_rep* rep2);
+  explicit box (std::shared_ptr<box_rep> rep2);
   
   inline bool is_nil () const { return rep == nullptr; }
   
@@ -146,7 +147,7 @@ public:
 
 inline bool is_nil (box b) { return b.is_nil(); }
 
-class box_rep {
+class box_rep : public std::enable_shared_from_this<box_rep> {
 private:
   SI x0, y0; // offset w.r.t. parent box
 
@@ -301,6 +302,9 @@ public:
   friend struct effect_box_rep;
   friend void make_eps (url dest, box b, int dpi);
   friend void make_raster_image (url dest, box b, double zoom);
+
+protected:
+  box self ();
 };
 
 extern int box_count;

@@ -105,7 +105,7 @@ text_box_rep::text_box_rep (path ip, int pos2, string s, font fn2, pencil p2,
 
 box
 text_box_rep::adjust_kerning (int mode, double factor) {
-  if (N (str) == 0) return this;
+  if (N (str) == 0) return self ();
   SI       pad= (SI) tm_round ((factor * fn->wfn) / 2);
   xkerning nxk (pad, 0, 0);
   if (!is_nil_or_zero (xk) && (mode & PROTRUSION_MASK) == 0) {
@@ -185,7 +185,7 @@ text_box_rep::left_auto_spacing (SI size) {
 
 box
 text_box_rep::expand_glyphs (int mode, double factor) {
-  if (N (str) == 0) return this;
+  if (N (str) == 0) return self ();
   font          nfn= fn->magnify (1.0 + factor, 1.0);
   text_box_rep* rep=
       tm_new<text_box_rep> (ip, pos, str, nfn, pen, xk, bg_color);
