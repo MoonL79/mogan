@@ -21,6 +21,11 @@ target("libmogan") do
         set_runtimes("MT")
         add_defines("_USE_MATH_DEFINES")
     end
+    if is_plat("windows") and is_arch("x64") then
+        -- Velopack C++ runtime：头文件路径供后续 tm_velopack 使用；链接项对静态库仅
+        -- 在最终 exe 链接时生效，stem 已自带，此处双保险。
+        add_velopack_runtime ()
+    end
     set_languages("c++17")
     set_policy("check.auto_ignore_flags", false)
     set_encodings("utf-8")
@@ -154,6 +159,7 @@ target("libmogan") do
                 USE_PLUGIN_TEX = true,
                 USE_PLUGIN_ISPELL = true,
                 USE_PLUGIN_PDF = has_config("pdfhummus"),
+                USE_PLUGIN_VELOPACK = is_plat("windows") and is_arch("x64"),
                 USE_PLUGIN_HTML = true,
                 USE_MUPDF_RENDERER = has_config("mupdf"),
                 USE_STARTUP_TAB = has_config("startup_tab"),
