@@ -39,7 +39,17 @@ private slots:
   void cleanup () { restore_env ("TEXMACS_HOME_PATH", orig_home); }
   void test_save_load_roundtrip ();
   void test_load_missing_file ();
+  void test_migrate_legacy_preferences ();
+  void test_migrate_no_legacy ();
 };
+
+// 写旧版 scheme 列表格式首选项文件（每行一个 ("key" "value") 对）
+static void
+write_legacy_scm (url dir, string content) {
+  make_dir (dir);
+  QVERIFY2 (!save_string (dir * "preferences.scm", content),
+            as_charp ("failed to write legacy scm: " * as_string (dir)));
+}
 
 void
 TestPreferences::test_save_load_roundtrip () {
@@ -88,6 +98,57 @@ TestPreferences::test_load_missing_file () {
 
   url prefs_file= get_tm_preference_path ();
   QVERIFY (!exists (prefs_file));
+  QVERIFY2 (get_user_preference ("some.key", "def") == "def",
+            as_charp ("missing file should yield defaults"));
+}
+
+void
+TestPreferences::test_migrate_legacy_preferences () {
+  QTemporaryDir home;
+  QVERIFY (home.isValid ());
+  string home_path (home.path ().toUtf8 ().constData ());
+  set_env ("TEXMACS_HOME_PATH", home_path);
+
+  // 两个旧版本目录，v2 新于 v1，含冲突键 key.shared（高版本应胜出）
+  write_legacy_scm (url (home_path) * "system" * "2026.2.3",
+                    "(\"key.a\" \"v1\")\n(\"key.shared\" \"old\")\n");
+  write_legacy_scm (url (home_path) * "system" * "2026.3.0-rc13",
+                    "(\"key.b\" \"v2\")\n(\"key.shared\" \"new\")\n");
+
+  load_user_preferences (); // 当前版本无 JSON → 触发迁移
+
+  QVERIFY2 (get_user_preference ("key.a", "") == "v1",
+            as_charp ("v1 key missing after migration"));
+  QVERIFY2 (get_user_preference ("key.b", "") == "v2",
+            as_charp ("v2 key missing after migration"));
+  QVERIFY2 (get_user_preference ("key.shared", "") == "new",
+            as_charp ("higher version should win the conflict"));
+
+  // 迁移落盘：当前版本 preferences.json 生成且包含合并结果
+  url prefs_file= get_tm_preference_path ();
+  QVERIFY2 (exists (prefs_file), as_charp ("migrated json not created"));
+  string content;
+  QVERIFY2 (!load_string (prefs_file, content, false),
+            as_charp ("failed to read migrated json"));
+  QVERIFY2 (occurs ("key.shared", content) && occurs ("\"new\"", content),
+            as_charp ("migrated content wrong: " * content));
+
+  // 再次加载直接读 JSON，不再迁移，键值稳定
+  load_user_preferences ();
+  QVERIFY2 (get_user_preference ("key.shared", "") == "new",
+            as_charp ("second load lost migrated values"));
+}
+
+void
+TestPreferences::test_migrate_no_legacy () {
+  QTemporaryDir home;
+  QVERIFY (home.isValid ());
+  set_env ("TEXMACS_HOME_PATH", string (home.path ().toUtf8 ().constData ()));
+
+  // 空 system/ 目录（首次安装）：不生成任何首选项文件
+  make_dir (url (home.path ().toUtf8 ().constData ()) * "system");
+  load_user_preferences ();
+  QVERIFY (!exists (get_tm_preference_path ()));
   QVERIFY2 (get_user_preference ("some.key", "def") == "def",
             as_charp ("missing file should yield defaults"));
 }

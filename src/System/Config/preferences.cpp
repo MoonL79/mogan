@@ -156,12 +156,121 @@ load_json_preferences (url prefs_file) {
           lolly_string (it.value ().get<std::string> ());
 }
 
+// 按 semver2 优先级比较两个版本串（忽略 build 元数据；核心段逐数字比较，预发布
+// 段按标识符比较，数字标识符小于字母标识符）。返回负数/0/正数。
+// 版本目录名来自 XMACS_VERSION，如 "2026.3.0-rc13"（旧目录）或
+// "2026.3.1-rc.1"。
+static int
+compare_versions (string a, string b) {
+  // 剥离 build 元数据（+ 之后的部分）
+  int a_plus= search_forwards ("+", 0, a);
+  int b_plus= search_forwards ("+", 0, b);
+  if (a_plus >= 0) a= a (0, a_plus);
+  if (b_plus >= 0) b= b (0, b_plus);
+  int           a_dash= search_forwards ("-", 0, a);
+  int           b_dash= search_forwards ("-", 0, b);
+  array<string> ac    = tokenize (a_dash >= 0 ? a (0, a_dash) : a, ".");
+  array<string> bc    = tokenize (b_dash >= 0 ? b (0, b_dash) : b, ".");
+  int           n     = N (ac) > N (bc) ? N (ac) : N (bc);
+  for (int i= 0; i < n; i++) {
+    long int an= i < N (ac) ? as_long_int (ac[i]) : 0;
+    long int bn= i < N (bc) ? as_long_int (bc[i]) : 0;
+    if (an != bn) return an < bn ? -1 : 1;
+  }
+  // 核心段相等：无预发布段 > 有预发布段；预发布段按标识符逐个比较
+  bool a_pre= a_dash >= 0;
+  bool b_pre= b_dash >= 0;
+  if (a_pre != b_pre) return a_pre ? -1 : 1;
+  if (!a_pre) return 0;
+  array<string> ap= tokenize (a (a_dash + 1, N (a)), ".");
+  array<string> bp= tokenize (b (b_dash + 1, N (b)), ".");
+  n               = N (ap) > N (bp) ? N (ap) : N (bp);
+  for (int i= 0; i < n; i++) {
+    if (i >= N (ap)) return -1; // a 缺标识符 → a < b
+    if (i >= N (bp)) return 1;
+    bool a_num= is_int (ap[i]);
+    bool b_num= is_int (bp[i]);
+    if (a_num && b_num) {
+      long int an= as_long_int (ap[i]);
+      long int bn= as_long_int (bp[i]);
+      if (an != bn) return an < bn ? -1 : 1;
+    }
+    else if (a_num) return -1; // 数字标识符 < 字母标识符
+    else if (b_num) return 1;
+    else if (ap[i] != bp[i]) return ap[i] < bp[i] ? -1 : 1;
+  }
+  return 0;
+}
+
+struct version_leq {
+  static bool leq (string a, string b) { return compare_versions (a, b) <= 0; }
+};
+
+// 读取旧版 scheme 列表格式的 .scm 首选项文件
+static void
+load_legacy_preferences (url prefs_file) {
+  tree p= block_to_scheme_tree (string_load (prefs_file));
+  while (is_func (p, TUPLE, 1))
+    p= p[0];
+  for (int i= 0; i < N (p); i++)
+    if (is_func (p[i], TUPLE, 2) && is_atomic (p[i][0]) &&
+        is_atomic (p[i][1]) && is_quoted (p[i][0]->label) &&
+        is_quoted (p[i][1]->label)) {
+      string var      = scm_unquote (p[i][0]->label);
+      string val      = scm_unquote (p[i][1]->label);
+      user_prefs (var)= val;
+    }
+}
+
+// 扫描 system/ 下含首选项文件的旧版本目录，按版本升序逐个导入并立即落盘。
+// 仅在当前版本目录没有 preferences.json（即升级后的首次启动）时调用。
+static void
+migrate_legacy_preferences () {
+  url           system_dir= get_texmacs_home_path () * "system";
+  bool          error_flag= false;
+  array<string> entries   = read_directory (system_dir, error_flag);
+  if (error_flag) return;
+
+  array<string> versions;
+  for (int i= 0; i < N (entries); i++) {
+    string name= entries[i];
+    if (starts (name, ".")) continue;
+    url dir= system_dir * name;
+    if (!is_directory (dir)) continue;
+    if (exists (dir * "preferences.scm") || exists (dir * "preferences.json"))
+      versions << name;
+  }
+  merge_sort_leq<string, version_leq> (versions);
+
+  bool imported= false;
+  for (int i= 0; i < N (versions); i++) {
+    url dir= system_dir * versions[i];
+    // 每个目录先 .scm 后 .json（json 覆盖 scm），后写覆盖先写 → 高版本优先
+    if (exists (dir * "preferences.scm")) {
+      load_legacy_preferences (dir * "preferences.scm");
+      imported= true;
+    }
+    if (exists (dir * "preferences.json")) {
+      load_json_preferences (dir * "preferences.json");
+      imported= true;
+    }
+  }
+  if (imported) {
+    user_prefs_modified= true;
+    make_dir (head (get_tm_preference_path ()));
+    save_user_preferences ();
+  }
+}
+
 void
 load_user_preferences () {
   url prefs_file= get_tm_preference_path ();
   user_prefs    = hashmap<string, string> ("");
   if (exists (prefs_file)) {
     load_json_preferences (prefs_file);
+  }
+  else {
+    migrate_legacy_preferences ();
   }
   user_prefs_modified= false;
 }
